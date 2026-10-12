@@ -196,10 +196,10 @@ input,select{background:#302082;color:#fff;border-color:#7268cc}input::placehold
     <button id="startBtn" class="start">Jugar local</button>
     <div class="start-av-hint" hidden></div>
     </div>
-    <div class="online-section"><h2>Online</h2><p>Las salas estarán disponibles cuando terminemos de preparar el entorno de prueba.</p>
+    <div class="online-section"><h2>Online</h2><p>Partidas de prueba con dos dispositivos · STAGING</p>
     <div class="online-actions">
-      <button id="createOnlineBtn" type="button" disabled>Crear sala</button>
-      <button id="showJoinBtn" type="button" disabled>Unirme a una sala</button>
+      <button id="createOnlineBtn" type="button">Crear sala</button>
+      <button id="showJoinBtn" type="button">Unirme a una sala</button>
     </div>
     <button id="resumeOnlineBtn" type="button" hidden>Recuperar partida online</button>
     <div id="onlinePanel" class="online-card" hidden>
@@ -208,7 +208,7 @@ input,select{background:#302082;color:#fff;border-color:#7268cc}input::placehold
       <input id="onlineName" maxlength="18" value="Facu" placeholder="Tu nombre">
       <div id="joinRow" class="online-row" hidden>
         <input id="roomCodeInput" maxlength="6" placeholder="CÓDIGO">
-        <button id="joinOnlineBtn" type="button" disabled>ENTRAR</button>
+        <button id="joinOnlineBtn" type="button">ENTRAR</button>
       </div>
       <div id="roomInfo" class="online-badge" hidden>
         Sala <span id="roomCode" class="online-code"></span>
@@ -298,6 +298,7 @@ input,select{background:#302082;color:#fff;border-color:#7268cc}input::placehold
 <div id="toast" class="toast"></div><div id="resultFlash" class="result-flash" role="status"><div class="result-flash__box"><div id="resultFlashTitle" class="result-flash__title"></div><div id="resultFlashAnswer" class="result-flash__answer"></div></div></div>
 
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
 <script>
 (() => {
 "use strict";
@@ -427,8 +428,8 @@ function setupMusic(){const button=document.querySelector('#musicBtn');button.ad
   let speechOn=true,fxOn=true,recognition=null,listening=false,recognitionContext=null,recognitionEngineActive=false,recognitionStopping=false,recognitionIdleWaiters=[],game=null;
 
 
-  const SUPABASE_URL="";
-  const SUPABASE_KEY="";
+  const SUPABASE_URL="https://qbzrqinnhrgeqvgtifrt.supabase.co";
+  const SUPABASE_KEY="sb_publishable_izK1zlWLL1jGWZUGAJJzOQ_1tPBR7Vu";
   const sb=(SUPABASE_URL&&SUPABASE_KEY&&window.supabase&&window.supabase.createClient)?window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY):null;
   const online={enabled:false,role:null,slot:null,code:null,token:null,version:0,channel:null,applying:false,syncTimer:null,inFlight:false,remoteTimerEndsAt:null,lastRoom:null,authority:false,dirty:false,pending:null,session:0,writerId:crypto.randomUUID(),opCounter:0,ownOps:new Map(),confirmedOps:new Set(),lastPromptKey:null,lastTurnStartSnapshot:null,remoteTick:null,syncError:false,pollTimer:null};
 
