@@ -3,11 +3,14 @@
 No cambia producción; mantiene todos los recursos originales dentro de ZIP fuente.
 """
 from pathlib import Path
+import hashlib
+import re
 import io
 import urllib.request
 import zipfile
 
 SOURCE_URL = "https://mambapalabra-b1-candidata.floot.app/_cdn/static/b280c36c-b922-47d1-9a6d-ef7327c9b517-mambapalabra-b1-10-visual.zip"
+EXPECTED_HTML_SHA256 = "1ce6484c1e50355e4f33e4eba28eabff305ce31831272f3e13135ecb4943e6ba"
 
 DEVICE = '''  function deviceSpeak(text,opts={},seq=host.seq){
     if(!window.speechSynthesis||!window.SpeechSynthesisUtterance)return Promise.resolve({status:SPEECH_RESULT.FAILED,started:false});
@@ -43,6 +46,7 @@ def consolidate(html):
     html=replace_once(html, OLD_MP3_ERROR, 'if(result.status===SPEECH_RESULT.FAILED)return deviceSpeak(text,opts,seq);', 'MP3 fallido')
     html=replace_once(html, '  async function primeAV(){', '  async function primeAV(){\n    try{const u=new SpeechSynthesisUtterance(" ");u.lang="es-AR";window.speechSynthesis.speak(u);}catch(e){}', 'prime AV')
     html=replace_once(html, 'B1.10-CANDIDATA-TV', 'B1.11-VOZ-COMPLETA', 'versión')
+    html=re.sub(r'<link rel="manifest"[^>]*>', '', html, count=1, flags=re.I)
     return html
 
 def main():
@@ -56,7 +60,11 @@ def main():
             if len(clips)!=188: raise RuntimeError(f'ZIP inesperado: {len(clips)} MP3')
             source.parent.mkdir(parents=True,exist_ok=True)
             source.write_bytes(archive.read('index.html'))
-    compiled=consolidate(source.read_text(encoding='utf8'))
+    raw=source.read_bytes()
+    actual=hashlib.sha256(raw).hexdigest()
+    if actual != EXPECTED_HTML_SHA256:
+        raise RuntimeError(f'La fuente cambió: SHA256 {actual}. NO se modifica B1.11.')
+    compiled=consolidate(raw.decode('utf8'))
     out=Path('game/B1_11_CONSOLIDADA.html')
     if out.exists() and out.read_text(encoding='utf8')!=compiled: raise RuntimeError('Ya existe una B1.11 distinta; no sobrescribir.')
     out.write_text(compiled,encoding='utf8')
