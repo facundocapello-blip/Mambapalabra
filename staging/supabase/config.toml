@@ -1,0 +1,4 @@
+project_id = "mambapalabra-b111-staging"
+
+[functions.multiplayer-room]
+verify_jwt = false

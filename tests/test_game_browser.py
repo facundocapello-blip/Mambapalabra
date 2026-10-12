@@ -501,17 +501,18 @@ class GameBrowserTests(unittest.TestCase):
             for _ in range(milliseconds // 200):
                 for page in pages:
                     page.clock.fast_forward(200)
-                    page.wait_for_timeout(5)
+                    page.wait_for_timeout(getattr(self, 'network_wait_ms', 5))
 
         try:
             host.locator('#onlinePanel').evaluate('(el)=>el.hidden=false')
             host.locator('#onlineName').fill('Host de prueba')
             host.evaluate('void mamba.createOnlineRoom()')
             pump()
-            self.assertEqual(host.evaluate('mamba.online.code'), 'TEST01')
+            code = host.evaluate('mamba.online.code')
+            self.assertRegex(code, r'^[A-Z0-9]{6}$')
             guest.locator('#showJoinBtn').click()
             guest.locator('#onlineName').fill('Guest de prueba')
-            guest.locator('#roomCodeInput').fill('TEST01')
+            guest.locator('#roomCodeInput').fill(code)
             guest.evaluate('void mamba.joinOnlineRoom()')
             pump(4000)
             self.assertEqual([p.evaluate('mamba.game.turnState') for p in pages], ['ANSWERING', 'ANSWERING'])

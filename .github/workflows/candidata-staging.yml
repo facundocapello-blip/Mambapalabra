@@ -1,0 +1,62 @@
+name: Candidata iPhone y backend de staging (sin aprovisionamiento)
+on:
+  push:
+    branches: ['preview/**']
+  pull_request:
+    branches: ['fix/b111-audio-coverage-timers']
+permissions:
+  contents: read
+jobs:
+  candidate:
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        browser: [chromium, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements-dev.txt
+      - run: python -m playwright install --with-deps ${{ matrix.browser }}
+      - run: python -m unittest discover -s tests -p test_https_export.py -v
+      - run: python tools/export_https_candidate.py --output artifacts/site --prefix /Mambapalabra/
+      - name: Controles móviles y conservación de recursos
+        env:
+          MAMBA_EXPORT: artifacts/site
+          MAMBA_BROWSER: ${{ matrix.browser }}
+          MAMBA_CHROMIUM: ''
+        run: python tests/test_candidate_mobile.py -v
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: candidata-iphone-${{ matrix.browser }}
+          path: artifacts/
+  staging:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: python -m pip install -r requirements-dev.txt
+      - run: python -m playwright install --with-deps chromium
+      - name: PostgreSQL aislado sin puertos ni servicios externos
+        run: |
+          docker run --rm -d --name mamba-b111-staging-pg -e POSTGRES_HOST_AUTH_METHOD=trust postgres@sha256:2d2b8998d31037bf721cfdf764d76ba74171b4fab3431b7f72c27c56ddbdf9e3
+          for attempt in $(seq 1 30); do
+            if docker exec mamba-b111-staging-pg pg_isready -U postgres; then break; fi
+            sleep 1
+          done
+          docker exec mamba-b111-staging-pg psql -U postgres -c 'CREATE ROLE anon; CREATE ROLE authenticated; CREATE ROLE service_role;'
+          docker exec -i mamba-b111-staging-pg psql -U postgres -v ON_ERROR_STOP=1 < staging/supabase/migrations/202610120001_rooms.sql
+      - name: Dos sesiones, concurrencia, tokens y versiones contra PostgreSQL real
+        env:
+          MAMBA_CHROMIUM: ''
+        run: python tests/test_staging_pg.py -v
+      - run: npx --yes deno test --allow-env staging/supabase/functions/multiplayer-room/index_test.ts
+      - if: always()
+        run: docker stop mamba-b111-staging-pg
