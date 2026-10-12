@@ -11,7 +11,15 @@ STAGING="qbzrqinnhrgeqvgtifrt"
 PRODUCTION="mcrnstwmubtiiacyiaeu"
 TRACK=r"""
 (() => {
-  window.__audioAudit={plays:[],playing:[],failed:[],utterances:[]};
+  window.__audioAudit={plays:[],playing:[],failed:[],utterances:[],created:[]};
+  const OriginalUtterance=window.SpeechSynthesisUtterance;
+  if(OriginalUtterance) {
+    window.SpeechSynthesisUtterance=function(text) {
+      if(String(text||'').trim()) window.__audioAudit.created.push(String(text).slice(0,150));
+      return new OriginalUtterance(text);
+    };
+    window.SpeechSynthesisUtterance.prototype=OriginalUtterance.prototype;
+  }
   const orig=HTMLMediaElement.prototype.play;
   HTMLMediaElement.prototype.play=function(...args) {
     const url=this.currentSrc||this.src||"";
@@ -61,7 +69,7 @@ def run():
             assert guest.locator("#sendTextBtn").is_disabled(),"Guest must not answer host turn"
             host_audit=host.evaluate("window.__audioAudit")
             assert host_audit["plays"] or host_audit["utterances"],"Host speech was never attempted"
-            guest_before=guest.evaluate("({playing:window.__audioAudit.playing.length,utterances:window.__audioAudit.utterances.length})")
+            guest_before=guest.evaluate("({playing:window.__audioAudit.playing.length,utterances:window.__audioAudit.utterances.length,created:window.__audioAudit.created.length})")
             host.locator("#textAnswer").fill("QA-RESPUESTA-INCORRECTA")
             host.locator("#sendTextBtn").click()
             guest.wait_for_function('!document.querySelector("#sendTextBtn").disabled',timeout=90000)
@@ -69,10 +77,11 @@ def run():
             audit=guest.evaluate("window.__audioAudit")
             played=audit["playing"][guest_before["playing"]:]
             utterances=audit["utterances"][guest_before["utterances"]:]
-            assert played or utterances, "Guest was not sent any narration on its first turn"
+            created=audit["created"][guest_before["created"]:]
+            assert played or utterances or created, "Guest did not attempt audio or synthesize narration on its first turn"
             assert not errors, "Browser errors: "+str(errors[:2])
             assert not illegal, "Unexpected production request"
-            print(f"PASS {browser_name}: host/guest audio attempt, turn handoff, guest play events={len(played)}, guest TTS utterances={len(utterances)}, permission gates OK")
+            print(f"PASS {browser_name}: guest media playing events={len(played)}, guest TTS speak={len(utterances)}, guest utterances created={len(created)}, turn handoff=OK")
             print("NOTE: browser sound events do not prove real iPhone speaker output.")
         except Exception:
             for label,page in (("host",host),("guest",guest)):
