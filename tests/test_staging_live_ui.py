@@ -7,7 +7,7 @@ STAGING="qbzrqinnhrgeqvgtifrt"
 PRODUCTION="mcrnstwmubtiiacyiaeu"
 def run():
     with sync_playwright() as pw:
-        browser=pw.chromium.launch()
+        browser=getattr(pw,os.environ.get("MAMBA_BROWSER","chromium")).launch()
         ctx1=browser.new_context(viewport={"width":390,"height":844},is_mobile=True,has_touch=True)
         ctx2=browser.new_context(viewport={"width":390,"height":844},is_mobile=True,has_touch=True)
         p1,p2=ctx1.new_page(),ctx2.new_page()
