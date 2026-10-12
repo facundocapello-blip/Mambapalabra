@@ -59,5 +59,7 @@ jobs:
           MAMBA_CHROMIUM: ''
         run: python tests/test_staging_pg.py -v
       - run: npx --yes deno test --allow-env staging/supabase/functions/multiplayer-room/index_test.ts
+      - name: Prueba del Edge Function desplegado (solo STAGING)
+        run: python tests/test_staging_live.py
       - if: always()
         run: docker stop mamba-b111-staging-pg
