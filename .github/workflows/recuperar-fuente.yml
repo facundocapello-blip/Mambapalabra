@@ -22,6 +22,8 @@ jobs:
         run: python tools/recuperar_fuente.py
       - name: Consolidar cinco cambios de B1.11
         run: python tools/build_b111.py
+      - name: Verificar checksums y pruebas de regresión del constructor
+        run: python -m unittest discover -s tests -v
       - name: Verificar sintaxis JavaScript
         run: |
           python - <<'PY'
