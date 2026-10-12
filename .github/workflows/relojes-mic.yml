@@ -2,6 +2,8 @@ name: B1.11 QA - relojes y RESPONDER manual
 on:
   push:
     branches: [fix/b111-dos-relojes-microfono-manual]
+  pull_request:
+    branches: [candidata-https-b111]
   workflow_dispatch:
 permissions:
   contents: read
