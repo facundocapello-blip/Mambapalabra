@@ -1,0 +1,33 @@
+name: Recuperar fuente B1.10 Floot para consolidar B1.11
+on:
+  workflow_dispatch:
+  push:
+    branches: [estabilizacion-b1-11]
+    paths:
+      - '.github/workflows/recuperar-fuente.yml'
+permissions:
+  contents: write
+jobs:
+  importar:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Descargar solo el HTML exacto del ZIP original y verificar 188 MP3
+        run: python tools/recuperar_fuente.py
+      - name: Registrar código original y hashes en rama de estabilización
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add game/B1_10_ORIGINAL_FLOOT.html game/ORIGEN.json
+          if git diff --cached --quiet; then
+            echo "El código original no cambió"
+          else
+            git commit -m "Importar fuente B1.10 exacta para consolidación B1.11 [sin producción]"
+            git push
+          fi
