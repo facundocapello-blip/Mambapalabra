@@ -1,0 +1,38 @@
+name: Regresión B1.11 candidata (sin despliegue)
+on:
+  pull_request:
+    branches: [estabilizacion-b1-11]
+  push:
+    branches: ['fix/**']
+permissions:
+  contents: read
+jobs:
+  browsers:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: python -m pip install -r requirements-dev.txt
+      - run: python -m playwright install --with-deps ${{ matrix.browser }}
+      - name: Tests de constructor y conservación
+        run: python -m unittest discover -s tests -p 'test_*assets.py' -v && python -m unittest discover -s tests -p 'test_build_b111.py' -v
+      - name: Regresión de navegador aislada de producción
+        env:
+          MAMBA_BROWSER: ${{ matrix.browser }}
+          MAMBA_CHROMIUM: ''
+        run: python tests/test_game_browser.py -v
+      - run: python tools/package_candidate.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: b111-${{ matrix.browser }}
+          path: artifacts/
