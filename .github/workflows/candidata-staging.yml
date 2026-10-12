@@ -29,7 +29,8 @@ jobs:
           MAMBA_CHROMIUM: ''
         run: python tests/test_candidate_mobile.py -v
       - name: Dos navegadores online HTTPS + backend STAGING real
-        if: matrix.browser == 'chromium'
+        env:
+          MAMBA_BROWSER: ${{ matrix.browser }}
         run: python tests/test_staging_live_ui.py
       - uses: actions/upload-artifact@v4
         if: always()
