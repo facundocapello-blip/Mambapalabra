@@ -1,0 +1,21 @@
+name: STAGING HTTP smoke (sin producción)
+on:
+  workflow_dispatch:
+  push:
+    branches: [preview/b111-https-iphone]
+    paths:
+      - 'tests/test_staging_live.py'
+      - '.github/workflows/staging-live.yml'
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test HTTP contract on staging only
+        run: python tests/test_staging_live.py
