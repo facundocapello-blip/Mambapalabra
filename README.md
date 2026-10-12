@@ -26,3 +26,33 @@ El archivo `tools/build_b111.py` de la rama de estabilización reproduce esos ca
 **Entrega:** PR con causa, corrección mínima, pruebas ejecutadas y resultados. Sin despliegue.
 
 **Importante:** Este repositorio es público. No añadir credenciales privadas ni service_role keys.
+
+## Candidata de estabilización (sin despliegue)
+
+`game/index.html` contiene el juego completo con correcciones de audio, cobertura
+K/W y temporizadores. `game/B1_11_CONSOLIDADA.html` sigue siendo la referencia
+B1.11 exacta; el constructor histórico no sobrescribe la candidata.
+Los 188 MP3, el logo y el manifest del ZIP original se conservan sin cambios.
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements-dev.txt
+.venv/bin/python -m playwright install --with-deps chromium webkit
+python3 -m http.server 8000 --bind 127.0.0.1 --directory game
+```
+
+Servir siempre `game/` como raíz HTTP para conservar `/new-audio/` y `/_cdn/`.
+El juego local no requiere claves ni Supabase; online conserva la integración
+existente, pero requiere validar un backend de staging autorizado.
+
+```bash
+python3 -m unittest discover -s tests -p 'test_build_b111.py' -v
+python3 -m unittest discover -s tests -p 'test_candidate_assets.py' -v
+MAMBA_BROWSER=chromium MAMBA_CHROMIUM='' .venv/bin/python tests/test_game_browser.py -v
+MAMBA_BROWSER=webkit .venv/bin/python tests/test_game_browser.py -v
+python3 tools/package_candidate.py
+```
+
+La CI ejecuta ambos navegadores y conserva capturas y el ZIP candidato como
+artefactos. No publica ni invoca servicios de producción.
+Ver [diagnóstico, alcance y resultados](docs/estabilizacion-b111.md).
