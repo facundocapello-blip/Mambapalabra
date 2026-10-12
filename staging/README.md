@@ -1,10 +1,15 @@
 # Staging online B1.11: separado de producción
 
-La candidata HTTPS publicada inicialmente es sólo local: no carga el SDK ni
-contiene la URL o la clave del Supabase de producción. Los botones online están
-desactivados hasta que exista un proyecto de staging autorizado.
+La candidata HTTPS se publicó inicialmente sólo local. Desde el 12/10/2026,
+se conectó exclusivamente a `MAMBAPALABRA-STAGING` (ref `qbzrqinnhrgeqvgtifrt`),
+con URL HTTPS y clave pública; el servidor original permanece aislado e inactivo.
+El frontend tiene los botones online habilitados. Código publicado en la rama
+`candidata-https-b111`, con respaldo
+`backup/candidata-b111-local-antes-online-20261012`.
 
-No se ha creado ni contratado un proyecto Supabase. El backend preparado es una
+Proyecto STAGING creado y saludable, organización original, región São Paulo,
+costo confirmado US$0/mes. Función Edge `multiplayer-room` versión 1 y migración
+`mambapalabra_staging_rooms_v1` instaladas. No se contrató ningún servicio pago. El backend preparado es una
 implementación nueva del contrato del cliente, no una copia certificada de las
 Edge Functions/RPC de producción. No se extraen datos ni claves de producción.
 
@@ -43,7 +48,7 @@ real mediante un adaptador HTTP local. Los tests Edge validan CORS, métodos,
 tamaño, envelope RPC y sanitización de errores. No llaman a Supabase real.
 Esto no certifica todavía la plataforma desplegada, Realtime o Safari físico.
 
-## Activación futura de staging
+## Activación del staging ya realizada (referencia reproducible)
 
 1. Usar un proyecto Supabase nuevo o existente separado, sólo tras confirmar su
    plan gratuito, cuotas disponibles y ausencia de cargos automáticos. No crear
@@ -75,6 +80,9 @@ Esto no certifica todavía la plataforma desplegada, Realtime o Safari físico.
 - Fin, empate, muerte súbita y revancha. Revisar logs sin volcar tokens.
 - Confirmar en el inspector que no hay solicitudes a Supabase/Floot de producción.
 
-Pendiente para ejecutar este recorrido real: proyecto de staging gratuito,
-despliegue de función/SQL y clave pública de ese proyecto. No se han contratado
-recursos ni se han modificado servicios de producción.
+Los prerrequisitos del staging están completos. El test HTTP del endpoint real
+aprobó crear sala, ingreso, bloqueo del invitado, sincronización del anfitrión,
+reintento idempotente y lectura final (CI `38274418437`). El test de dos
+contextos Chromium por HTTPS también pasó en `38274990632`. WebKit real remoto,
+Safari físico, desconexión, fin/revancha y vuelta completa requieren pruebas
+adicionales; no se alteró la infraestructura productiva.
