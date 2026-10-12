@@ -1,8 +1,10 @@
 {
-  "candidate": "B1.11",
+  "candidate": "B1.12",
   "source_commit": "65aa00153fb744004f890900640363cbbe524ebd",
   "asset_prefix": "/Mambapalabra/",
   "mp3": 188,
-  "online": "disabled",
-  "index_sha256": "76d62bc7f8cf97e9590d6a324b65b952e518ae4a294917e0563fa69682997406"
+  "online": "staging",
+  "index_sha256": "8d296413181b294d54aa08123c08667e8ddcef4e240c822654a3f628b11180a3",
+  "staging_project": "qbzrqinnhrgeqvgtifrt",
+  "revision": "Dos relojes fijos por jugador; micrófono solo con RESPONDER; backend STAGING"
 }
