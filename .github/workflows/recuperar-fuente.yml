@@ -21,7 +21,10 @@ jobs:
       - name: Descargar origen exacto y validar 188 MP3
         run: python tools/recuperar_fuente.py
       - name: Consolidar cinco cambios de B1.11
-        run: python tools/build_b111.py
+        run: |
+          # Regenerar sólo salida derivada, preservando la fuente original con SHA verificado.
+          rm -f game/B1_11_CONSOLIDADA.html
+          python tools/build_b111.py
       - name: Verificar checksums y pruebas de regresión del constructor
         run: python -m unittest discover -s tests -v
       - name: Verificar sintaxis JavaScript
