@@ -1,5 +1,13 @@
 # Candidata HTTPS independiente para iPhone
 
+**URL activa y verificada:** https://facundocapello-blip.github.io/Mambapalabra/
+
+Pages publica `candidata-https-b111` desde `/(root)` con HTTPS obligatorio.
+El HTML público coincide con el SHA256 indicado abajo. Chromium y WebKit
+aprobaron el recorrido móvil sobre esta URL real en retrato y paisaje, y los
+188 MP3 y demás recursos publicados conservan sus hashes. Online sigue apagado
+hasta disponer de staging remoto; no hay llamadas a producción.
+
 La rama de publicación `candidata-https-b111` es independiente y no tiene padre
 ni merge con main/estabilización. Contiene sólo la exportación estática del commit
 `65aa00153fb744004f890900640363cbbe524ebd`, con 188 MP3 originales, logo y manifest.
@@ -16,14 +24,13 @@ El repositorio es público. GitHub Pages para un repositorio público permite
 alojamiento estático gratuito. No se activan planes pagos, dominios de pago,
 GitHub Actions con runners pagos ni servicios Supabase.
 
-La integración actual devolvió HTTP 403 al intentar habilitar Pages. La cuenta
-propietaria debe habilitarlo una vez en:
+La integración devolvió HTTP 403 al intentar habilitar Pages. La cuenta
+propietaria lo habilitó manualmente en:
 https://github.com/facundocapello-blip/Mambapalabra/settings/pages
 
-Elegir **Deploy from a branch → candidata-https-b111 → /(root) → Save**.
-No seleccionar main, no hacer merge y no alterar Floot. La URL esperada es
-`https://facundocapello-blip.github.io/Mambapalabra/`; sólo se considera entregada
-cuando GitHub informe el despliegue y se verifique HTTP 200 y el contenido.
+Configuración: **Deploy from a branch → candidata-https-b111 → /(root)**.
+No seleccionar main, no hacer merge y no alterar Floot. GitHub informa estado
+`built`; la URL devuelve HTTP 200 y el contenido exacto de la candidata.
 
 El exportador adapta `/new-audio/` y `/_cdn/` al prefijo del proyecto Pages,
 verifica los recursos y rechaza sobrescribir directorios existentes. Las
@@ -46,7 +53,7 @@ python3 -m unittest discover -s tests -p test_https_export.py -v
   ninguna excepción JavaScript y cero solicitudes a Floot/Supabase de producción.
 - Todos los MP3 y demás recursos se solicitan por HTTP y se comprueban con SHA256.
   Capturas: `artifacts/mobile/<browser>-<ancho>.png`.
-- Al habilitar Pages, repetir exactamente estos checks sobre HTTPS real:
+- Checks ejecutados y aprobados sobre HTTPS real en ambos navegadores:
 
 ```bash
 MAMBA_CANDIDATE_URL=https://facundocapello-blip.github.io/Mambapalabra/ \
@@ -78,8 +85,14 @@ No se ha creado un Supabase de staging ni se ha contratado ningún servicio. El
 SQL/adaptador y las pruebas locales están preparados; falta el proyecto gratuito
 y desplegar el backend antes de habilitar online en la candidata pública.
 
+La prueba HTTPS de Chromium necesitó confiar en la CA del proxy de este entorno.
+La revisión automática rechazó modificar el almacén NSS permanente. Se ejecutó
+Chromium dentro de un espacio de montaje aislado con un almacén NSS temporal en
+`/tmp`; la confianza del perfil real quedó intacta y TLS permaneció habilitado.
+Ambos navegadores aprobaron las pruebas HTTPS públicas sin ignorar certificados.
+
 También se preparó un servidor local restringido a la exportación con soporte
 de Range/HEAD para los MP3 (`tools/candidate_preview_server.py`), verificado con
 tres pruebas HTTP. Se probó un túnel gratuito alternativo, pero la red de este
 entorno rechazó la conexión al servicio. No se generó una URL temporal jugable;
-Pages sigue siendo la opción preparada para el propietario.
+la candidata estable finalmente quedó publicada en GitHub Pages.
