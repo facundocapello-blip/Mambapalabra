@@ -33,7 +33,7 @@ class UICandidateTests(unittest.TestCase):
         cls.server.shutdown();cls.server.server_close()
     def make_page(self):
         ctx=self.browser.new_context(viewport={'width':390,'height':844},is_mobile=True,has_touch=True,device_scale_factor=3)
-        ctx.add_init_script("""() => {
+        ctx.add_init_script("""(() => {
           window.__micStarts=0;
           window.__permissionRequests=0;
           class FakeSpeechRecognition {
@@ -47,7 +47,7 @@ class UICandidateTests(unittest.TestCase):
           if(navigator.mediaDevices)navigator.mediaDevices.getUserMedia=() => {
             window.__permissionRequests++;return Promise.reject(new Error('Do not request microphone before RESPONDER'));
           };
-        }""")
+        })();""")
         page=ctx.new_page()
         errors=[];page.on('pageerror',lambda e: errors.append(str(e)))
         page.goto(self.url,wait_until='domcontentloaded')
