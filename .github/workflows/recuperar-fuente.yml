@@ -1,4 +1,4 @@
-name: Recuperar fuente B1.10 Floot para consolidar B1.11
+name: Recuperar y consolidar fuente Floot B1.11 (NO publicar)
 on:
   workflow_dispatch:
   push:
@@ -18,16 +18,36 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Descargar solo el HTML exacto del ZIP original y verificar 188 MP3
+      - name: Descargar origen exacto y validar 188 MP3
         run: python tools/recuperar_fuente.py
-      - name: Registrar código original y hashes en rama de estabilización
+      - name: Consolidar cinco cambios de B1.11
+        run: python tools/build_b111.py
+      - name: Verificar sintaxis JavaScript
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from html.parser import HTMLParser
+          class JS(HTMLParser):
+              def __init__(self):
+                  super().__init__(); self.scripts=[]; self.on=False
+              def handle_starttag(self,tag,attrs):
+                  if tag=='script' and not dict(attrs).get('src'): self.on=True
+              def handle_endtag(self,tag):
+                  if tag=='script': self.on=False
+              def handle_data(self,data):
+                  if self.on: self.scripts.append(data)
+          p=JS();p.feed(Path('game/B1_11_CONSOLIDADA.html').read_text())
+          Path('check.js').write_text(''.join(p.scripts))
+          PY
+          node --check check.js
+      - name: Commitir fuentes de trabajo, sin desplegar ni cargar audios al repo
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add game/B1_10_ORIGINAL_FLOOT.html game/ORIGEN.json
+          git add game/B1_10_ORIGINAL_FLOOT.html game/B1_11_CONSOLIDADA.html game/ORIGEN.json
           if git diff --cached --quiet; then
-            echo "El código original no cambió"
+            echo "No hay cambios"
           else
-            git commit -m "Importar fuente B1.10 exacta para consolidación B1.11 [sin producción]"
+            git commit -m "Extraer HTML Floot y consolidar B1.11 exacta, sin publicar"
             git push
           fi
