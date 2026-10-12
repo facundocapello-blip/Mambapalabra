@@ -44,3 +44,8 @@ jobs:
         env:
           MAMBA_BROWSER: ${{ matrix.browser }}
         run: python -m unittest discover -s tests -p test_ui_relojes_mic.py -v
+      - name: Dos jugadores reales contra Pages HTTPS y Supabase STAGING (sin producción)
+        env:
+          MAMBA_BROWSER: ${{ matrix.browser }}
+        run: python tests/test_staging_live_ui.py
+
