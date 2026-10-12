@@ -77,3 +77,9 @@ nombres de prueba y registrar modelo/iOS, modo normal y modo añadido a inicio:
 No se ha creado un Supabase de staging ni se ha contratado ningún servicio. El
 SQL/adaptador y las pruebas locales están preparados; falta el proyecto gratuito
 y desplegar el backend antes de habilitar online en la candidata pública.
+
+También se preparó un servidor local restringido a la exportación con soporte
+de Range/HEAD para los MP3 (`tools/candidate_preview_server.py`), verificado con
+tres pruebas HTTP. Se probó un túnel gratuito alternativo, pero la red de este
+entorno rechazó la conexión al servicio. No se generó una URL temporal jugable;
+Pages sigue siendo la opción preparada para el propietario.
