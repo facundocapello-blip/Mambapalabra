@@ -35,7 +35,7 @@ jobs:
           assert 'autoStartRecognition' not in s
           assert all('id="'+x+'"' in s for x in ['orbTimer1','orbTimer2','orbName1','orbName2'])
           assert 'qbzrqinnhrgeqvgtifrt' in s and 'mcrnstwmubtiiacyiaeu' not in s
-          scripts=re.findall(r'<script(?:\s[^>]*)?>([\s\S]*?)</script>',s)
+          scripts=re.findall(r'<script>([\s\S]*?)</script>',s)
           assert len(scripts)==1,len(scripts)
           Path('check-inline.js').write_text(scripts[0])
           PY
