@@ -515,7 +515,14 @@ class GameBrowserTests(unittest.TestCase):
             guest.locator('#roomCodeInput').fill(code)
             guest.evaluate('void mamba.joinOnlineRoom()')
             pump(4000)
-            self.assertEqual([p.evaluate('mamba.game.turnState') for p in pages], ['ANSWERING', 'ANSWERING'])
+            # The real PostgreSQL fixture responds asynchronously. Wait for both
+            # clients to reach ANSWERING, not for an arbitrary fixed amount of time.
+            for _ in range(100):
+                states = [p.evaluate('mamba.game && mamba.game.turnState') for p in pages]
+                if states == ['ANSWERING', 'ANSWERING']:
+                    break
+                pump(200)
+            self.assertEqual(states, ['ANSWERING', 'ANSWERING'])
             self.assertTrue(host.locator('#sendTextBtn').is_enabled())
             self.assertFalse(guest.locator('#sendTextBtn').is_enabled())
             self.assertIsNotNone(host.evaluate('mamba.onlineState().timerEndsAt'))
