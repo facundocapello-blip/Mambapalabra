@@ -148,6 +148,16 @@ input,select{background:#302082;color:#fff;border-color:#7268cc}input::placehold
 .game .letter-chip.current{background:#fff;color:#261375;border-color:#ff65dc;box-shadow:0 0 0 3px #ff65dc80,0 0 14px #3988ffcc}
 .options-menu .btn-restart{font-size:13px!important;min-width:0!important;min-height:44px!important;padding:8px 10px!important}
 @media(max-width:760px){.game .rosco-center strong{font-size:var(--center-letter-size,46px)}.options-menu button{font-size:13px!important;min-height:44px!important;padding:8px 10px!important}}
+
+/* Los dos círculos muestran segundos independientes; los nombres quedan debajo. */
+.game .stage-metrics{justify-content:space-between;padding:0 15px;gap:16px;min-height:94px}
+.game .player-time{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:0;max-width:44%;flex:0 1 auto}
+.game .player-time .time-orb{background:#27177e}
+.game .player-time .time-orb.active-turn{background:#c32bb8}
+.game .player-time .time-orb.danger{background:#ce2d59}
+.game .player-time .time-orb strong{font-variant-numeric:tabular-nums}
+.game .orb-name{font-size:12px;line-height:1.1;font-weight:700;color:#e3dfff;max-width:145px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center}
+@media(max-height:700px){.game .stage-metrics{min-height:72px}.game .player-time{gap:3px}}
 </style>
 </head>
 <body>
@@ -192,7 +202,7 @@ input,select{background:#302082;color:#fff;border-color:#7268cc}input::placehold
       </div>
     </div>
 
-    <label class="hands-free"><input id="handsFree" type="checkbox" checked> Micrófono automático</label>
+    
     <button id="startBtn" class="start">Jugar local</button>
     <div class="start-av-hint" hidden></div>
     </div>
@@ -256,7 +266,7 @@ input,select{background:#302082;color:#fff;border-color:#7268cc}input::placehold
         </div>
       </article>
 
-      <div class="stage-metrics"><div class="time-orb"><small>SEGUNDOS</small><strong id="railTimer">150</strong></div><span id="rivalTime" class="rival-time"></span><div class="hits-orb"><small>ACIERTOS</small><strong id="activeHits">0</strong></div></div>
+      <div class="stage-metrics"><div class="player-time"><div id="orbP1" class="time-orb"><strong id="orbTimer1">150</strong></div><span id="orbName1" class="orb-name">Mamba</span></div><div class="player-time"><div id="orbP2" class="time-orb"><strong id="orbTimer2">150</strong></div><span id="orbName2" class="orb-name">Facu</span></div></div>
     </section>
 
     <section class="card question-card">
@@ -417,7 +427,8 @@ function setupMusic(){const button=document.querySelector('#musicBtn');button.ad
     name1:$("#name1"),name2:$("#name2"),timerSelect:$("#timerSelect"),scoreName1:$("#scoreName1"),scoreName2:$("#scoreName2"),
     timer1:$("#timer1"),timer2:$("#timer2"),boardName1:$("#boardName1"),boardName2:$("#boardName2"),
     centerName1:$("#centerName1"),centerName2:$("#centerName2"),finalName1:$("#finalName1"),finalName2:$("#finalName2"),
-    railPlayer:$("#railPlayer"),railTimer:$("#railTimer"),railPass:$("#railPass"),railRepeat:$("#railRepeat"),
+    orbP1:$("#orbP1"),orbP2:$("#orbP2"),orbTimer1:$("#orbTimer1"),orbTimer2:$("#orbTimer2"),orbName1:$("#orbName1"),orbName2:$("#orbName2"),
+    railPlayer:$("#railPlayer"),railPass:$("#railPass"),railRepeat:$("#railRepeat"),
     createOnline:$("#createOnlineBtn"),showJoin:$("#showJoinBtn"),onlinePanel:$("#onlinePanel"),onlineName:$("#onlineName"),
     joinRow:$("#joinRow"),roomCodeInput:$("#roomCodeInput"),joinOnline:$("#joinOnlineBtn"),roomInfo:$("#roomInfo"),
     roomCode:$("#roomCode"),roomStatus:$("#roomStatus"),onlineError:$("#onlineError"),onlineLive:$("#onlineLive")
@@ -447,7 +458,7 @@ function setupMusic(){const button=document.querySelector('#musicBtn');button.ad
     game={audioFailed:!!st.audioFailed,handoffLead:st.handoffLead||"",matchId:st.matchId||"legacy",suddenQuestion:st.suddenQuestion||null,resultReason:st.resultReason||null,players:st.players,active:Number(st.active)||0,suddenDeath:!!st.suddenDeath,suddenRound:Number(st.suddenRound)||0,suddenScores:Array.isArray(st.suddenScores)?st.suddenScores:[0,0],reserveUsed:new Set(st.reserveUsed||[]),over:!!st.over,turnState:st.turnState||TURN_STATE.SWITCHING,turnToken:Number(st.turnToken)||0,timerId:null,timerStartedAt:null,timerOwner:null,timerRunId:0};
     online.remoteTimerEndsAt=st.timerEndsAt||null;
     const n1=game.players[0].name,n2=game.players[1].name;
-    els.scoreName1.textContent=n1;els.scoreName2.textContent=n2;els.boardName1.textContent=n1;els.boardName2.textContent=n2;els.centerName1.textContent=n1.toUpperCase();els.centerName2.textContent=n2.toUpperCase();els.finalName1.textContent=n1;els.finalName2.textContent=n2;
+    els.scoreName1.textContent=n1;els.scoreName2.textContent=n2;els.boardName1.textContent=n1;els.boardName2.textContent=n2;els.centerName1.textContent=n1.toUpperCase();els.centerName2.textContent=n2.toUpperCase();els.finalName1.textContent=n1;els.finalName2.textContent=n2;els.orbName1.textContent=n1;els.orbName2.textContent=n2;
     els.lobby.hidden=true;els.end.hidden=!game.over;els.game.hidden=game.over;
     renderRoscos();if(game.over)renderResults();else if(game.suddenDeath)renderSudden();else syncUI();
     clearInterval(online.remoteTick);online.remoteTick=setInterval(()=>{if(game&&!game.over)renderTimers();},200);
@@ -490,7 +501,7 @@ function setupMusic(){const button=document.querySelector('#musicBtn');button.ad
         if(game.players[game.active].timeMs<=0){game.timerOwner=game.active;handleTimeUp(game.active,game.timerRunId);return;}
         startTimer(game.active);
       }
-      updateTurnControls();autoStartRecognition();return;
+      updateTurnControls();return;
     }
     // No unfinished async validation survives a reload. Recover the accepted question,
     // scores and cursor without resubmitting the previous answer.
@@ -652,7 +663,7 @@ function setupMusic(){const button=document.querySelector('#musicBtn');button.ad
     }finally{
       if(session===online.session){
         online.inFlight=false;updateTurnControls();
-        if(!online.syncError&&game&&!game.over&&isMyOnlineTurn()&&game.turnState===TURN_STATE.ANSWERING){startTimer(game.active);autoStartRecognition();}
+        if(!online.syncError&&game&&!game.over&&isMyOnlineTurn()&&game.turnState===TURN_STATE.ANSWERING){startTimer(game.active);}
       }
     }
   }
@@ -830,13 +841,13 @@ Object.assign(STATIC_AUDIO,{"A: Dicho de un sabor intenso y desagradable, como e
     if(!game)return;const t1=effectiveTimeMs(0),t2=effectiveTimeMs(1);
     els.timer1.textContent=formatTime(t1);els.timer2.textContent=formatTime(t2);
     els.timer1.classList.toggle("danger",t1<=30000);els.timer2.classList.toggle("danger",t2<=30000);
-    if(els.railTimer){
-      const activeMs=game.active===0?t1:t2;
-      els.railTimer.textContent=String(Math.max(0,Math.ceil(activeMs/1000)));
-      els.railTimer.parentElement.classList.toggle("danger",activeMs<=30000);
-    }
-    if($("#activeHits"))$("#activeHits").textContent=game.players[game.active].correct;
-    if($("#rivalTime")){const rival=1-game.active;$("#rivalTime").textContent=game.players[rival].name+" · "+Math.max(0,Math.ceil((rival===0?t1:t2)/1000))+" s";}
+    // Izquierda: jugador 1. Derecha: jugador 2.
+    els.orbTimer1.textContent=String(Math.max(0,Math.ceil(t1/1000)));
+    els.orbTimer2.textContent=String(Math.max(0,Math.ceil(t2/1000)));
+    els.orbP1.classList.toggle("active-turn",game.active===0);
+    els.orbP2.classList.toggle("active-turn",game.active===1);
+    els.orbP1.classList.toggle("danger",t1<=30000);
+    els.orbP2.classList.toggle("danger",t2<=30000);
     const owner=game.timerOwner;
     if(!game.over&&!game.suddenDeath&&game.timerId&&owner!==null&&owner!==undefined&&
        (runId===game.timerRunId)&&effectiveTimeMs(owner)<=0)handleTimeUp(owner,game.timerRunId);
@@ -911,7 +922,7 @@ Object.assign(STATIC_AUDIO,{"A: Dicho de un sabor intenso y desagradable, como e
     else{
       host.resumePlayback?.();
       if(game.turnState===TURN_STATE.SWITCHING){if(game.suddenDeath)promptSudden();else turnPrompt();}
-      if(game.turnState===TURN_STATE.ANSWERING){startTimer(game.active);autoStartRecognition();}
+      if(game.turnState===TURN_STATE.ANSWERING){startTimer(game.active);}
       els.transcript.textContent=game.turnState===TURN_STATE.READING?"Escuchá la definición…":"Tocá RESPONDER para hablar, o escribí.";
     }
     updatePauseControl();updateTurnControls();updateMusic();
@@ -987,24 +998,12 @@ Object.assign(STATIC_AUDIO,{"A: Dicho de un sabor intenso y desagradable, como e
   }
   let avPrimed=false;
   async function primeAV(){
+    // Preparar únicamente el audio. El micrófono se abre al tocar RESPONDER.
     try{const u=new SpeechSynthesisUtterance(" ");u.lang="es-AR";window.speechSynthesis.speak(u);}catch(e){}
-    const audioUnlock=unlockAudio();
-    let micOk=true;
-    try{
-      if(document.querySelector("#handsFree").checked&&navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){
-        // A permission dialog may remain unanswered forever. Release any late
-        // stream and allow the text workflow without waiting for that dialog.
-        const request=navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{stream.getTracks().forEach(t=>t.stop());return true;});
-        micOk=await new Promise(resolve=>{
-          const deadline=setTimeout(()=>resolve(false),5000);
-          request.then(ok=>{clearTimeout(deadline);resolve(ok);},()=>{clearTimeout(deadline);resolve(false);});
-        });
-      }
-    }catch(e){micOk=false;}
-    await audioUnlock;
+    await unlockAudio();
     avPrimed=true;
     if(els.start)els.start.classList.add("av-ready");
-    return micOk;
+    return true;
   }
 
   function setVoiceStatus(mode,msg){
@@ -1203,7 +1202,7 @@ Object.assign(STATIC_AUDIO,{"A: Dicho de un sabor intenso y desagradable, como e
     const result=await hostSpeak(promptForItem(item));
     if(!stillValid()||!readingCanFinish(result))return;
     const stillCurrent=currentItem();if(!stillCurrent||stillCurrent.index!==itemIndex)return;
-    setTurnState(TURN_STATE.ANSWERING);startTimer(owner);if(result.status===SPEECH_RESULT.COMPLETED)autoStartRecognition();
+    setTurnState(TURN_STATE.ANSWERING);startTimer(owner);
   }
   function advanceWithinPlayer(){const p=player();if(p.phase==="first")p.cursor++;else if(p.phase==="pending"&&p.pendingQueue.length)p.pendingQueue.shift();}
 
@@ -1337,7 +1336,7 @@ Object.assign(STATIC_AUDIO,{"A: Dicho de un sabor intenso y desagradable, como e
       const nameResult=await hostSpeak(playerAnnouncement(player().name));if(!valid()||!readingCanFinish(nameResult))return;
       const result=await hostSpeak(promptForItem(q));if(!valid()||!readingCanFinish(result))return;
     }else els.transcript.textContent="Micrófono pendiente de cierre. Respondé por texto.";
-    setTurnState(TURN_STATE.ANSWERING);updateSuddenControls();if(idle)autoStartRecognition();
+    setTurnState(TURN_STATE.ANSWERING);updateSuddenControls();
   }
   async function submitSudden(raw,fromRecognition=false){
     if(!game||game.over||isLocalPaused()||!game.suddenDeath||!isMyOnlineTurn()||(!fromRecognition&&game.turnState!==TURN_STATE.ANSWERING))return;
@@ -1356,7 +1355,7 @@ Object.assign(STATIC_AUDIO,{"A: Dicho de un sabor intenso y desagradable, como e
   }
   function renderResults(){
     const m=game.players[0].correct,f=game.players[1].correct,n1=game.players[0].name,n2=game.players[1].name;
-    els.finalMamba.textContent=m;els.finalFacu.textContent=f;els.finalName1.textContent=n1;els.finalName2.textContent=n2;
+    els.finalMamba.textContent=m;els.finalFacu.textContent=f;els.finalName1.textContent=n1;els.finalName2.textContent=n2;els.orbName1.textContent=n1;els.orbName2.textContent=n2;
     let text,sub;
     if(game.suddenScores[0]!==game.suddenScores[1]){const win=game.suddenScores[0]>game.suddenScores[1]?n1:n2;text="Gana "+win;sub="Desempate por muerte súbita.";}
     else if(m!==f){text="Gana "+(m>f?n1:n2);sub=`${n1}: ${m} aciertos · ${n2}: ${f} aciertos.`;}
@@ -1417,7 +1416,6 @@ Object.assign(STATIC_AUDIO,{"A: Dicho de un sabor intenso y desagradable, como e
     // No replay loop: engine has ended, remain in ANSWERING and let the player retry explicitly.
     setTurnState(TURN_STATE.ANSWERING);startTimer(ctx.owner);els.transcript.textContent="No te entendí. Tocá RESPONDER o escribí.";
   }
-  function autoStartRecognition(){if(document.querySelector("#handsFree").checked)startRecognition();}
   function startRecognition(){
     const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
     if(isLocalPaused()||!SR||recognitionEngineActive||listening||!game||game.over||game.turnState!==TURN_STATE.ANSWERING||!isMyOnlineTurn())return;
@@ -1471,7 +1469,7 @@ Object.assign(STATIC_AUDIO,{"A: Dicho de un sabor intenso y desagradable, como e
   }
 
   function newGame(n1,n2,seconds){return {matchId:crypto.randomUUID(),players:[makePlayer("Mamba",n1,seconds),makePlayer("Facu",n2,seconds)],active:0,suddenDeath:false,suddenQuestion:null,suddenRound:0,suddenScores:[0,0],reserveUsed:new Set(),over:false,turnState:TURN_STATE.SWITCHING,turnToken:0,timerId:null,timerStartedAt:null,timerOwner:null,timerRunId:0};}
-  function showGameNames(){const [n1,n2]=game.players.map(p=>p.name);els.scoreName1.textContent=n1;els.scoreName2.textContent=n2;els.boardName1.textContent=n1;els.boardName2.textContent=n2;els.centerName1.textContent=n1.toUpperCase();els.centerName2.textContent=n2.toUpperCase();els.finalName1.textContent=n1;els.finalName2.textContent=n2;}
+  function showGameNames(){const [n1,n2]=game.players.map(p=>p.name);els.scoreName1.textContent=n1;els.scoreName2.textContent=n2;els.boardName1.textContent=n1;els.boardName2.textContent=n2;els.centerName1.textContent=n1.toUpperCase();els.centerName2.textContent=n2.toUpperCase();els.finalName1.textContent=n1;els.finalName2.textContent=n2;els.orbName1.textContent=n1;els.orbName2.textContent=n2;}
   async function onlineRematch(){
     if(!online.enabled||!game?.over)return;
     if(online.role!=="host"){toast("El anfitrión inicia la revancha.");return;}
@@ -1495,7 +1493,7 @@ Object.assign(STATIC_AUDIO,{"A: Dicho de un sabor intenso y desagradable, como e
     resetQuestionDraw();
     game=newGame(n1,n2,seconds);
     rememberQuestionDraw();
-    els.scoreName1.textContent=n1;els.scoreName2.textContent=n2;els.boardName1.textContent=n1;els.boardName2.textContent=n2;els.centerName1.textContent=n1.toUpperCase();els.centerName2.textContent=n2.toUpperCase();els.finalName1.textContent=n1;els.finalName2.textContent=n2;
+    els.scoreName1.textContent=n1;els.scoreName2.textContent=n2;els.boardName1.textContent=n1;els.boardName2.textContent=n2;els.centerName1.textContent=n1.toUpperCase();els.centerName2.textContent=n2.toUpperCase();els.finalName1.textContent=n1;els.finalName2.textContent=n2;els.orbName1.textContent=n1;els.orbName2.textContent=n2;
     els.lobby.hidden=true;els.end.hidden=true;els.game.hidden=false;renderRoscos();syncUI();
     if(withCountdown){
       const instance=game,overlay=document.querySelector("#startCountdown");game.countingDown=true;updatePauseControl();overlay.hidden=false;
@@ -1510,9 +1508,9 @@ Object.assign(STATIC_AUDIO,{"A: Dicho de un sabor intenso y desagradable, como e
   }
 
   els.start.addEventListener("click",async()=>{
-    els.start.disabled=true;els.start.textContent="HABILITANDO 🎤 🔊…";
-    const micOk=await primeAV();
-    els.start.textContent=micOk?"✓ LISTO":"▶ COMENZAR";
+    els.start.disabled=true;els.start.textContent="PREPARANDO SONIDO…";
+    await primeAV();
+    els.start.textContent="✓ LISTO";
     els.start.disabled=false;
     await resetGame(true);
   });
@@ -1563,7 +1561,7 @@ Object.assign(STATIC_AUDIO,{"A: Dicho de un sabor intenso y desagradable, como e
     if(idle){result=await hostSpeak(promptForItem(item));if(!valid()||!readingCanFinish(result))return;}
     else els.transcript.textContent="Micrófono pendiente de cierre. Respondé por texto.";
     const stillCurrent=currentItem();if(!stillCurrent||stillCurrent.index!==itemIndex)return;
-    setTurnState(TURN_STATE.ANSWERING);startTimer(owner);if(idle&&result?.status===SPEECH_RESULT.COMPLETED)autoStartRecognition();
+    setTurnState(TURN_STATE.ANSWERING);startTimer(owner);
   });
 
   els.sound.addEventListener("click",()=>{
@@ -1571,7 +1569,7 @@ Object.assign(STATIC_AUDIO,{"A: Dicho de un sabor intenso y desagradable, como e
     if(!speechOn&&game&&!game.over&&isMyOnlineTurn()&&game.turnState===TURN_STATE.READING){
       cancelHostSpeech();game.turnToken++;stopRecognition();
       const instance=game,token=game.turnToken;
-      waitForRecognitionIdle().then(idle=>{if(game!==instance||game.over||token!==game.turnToken)return;setTurnState(TURN_STATE.ANSWERING);if(game.suddenDeath)updateSuddenControls();else{startTimer(game.active);if(idle)autoStartRecognition();}});
+      waitForRecognitionIdle().then(idle=>{if(game!==instance||game.over||token!==game.turnToken)return;setTurnState(TURN_STATE.ANSWERING);if(game.suddenDeath)updateSuddenControls();else{startTimer(game.active);}});
     }
   });
   els.fx.addEventListener("click",()=>{fxOn=!fxOn;els.fx.textContent=fxOn?"🎵 FX ON":"🎵 FX OFF";els.fx.setAttribute("aria-pressed",fxOn);});
