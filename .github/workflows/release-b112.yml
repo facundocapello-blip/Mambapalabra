@@ -1,0 +1,30 @@
+name: B1.12 - comprobar y empaquetar (sin publicar)
+on:
+  pull_request:
+    branches: [candidata-https-b111]
+    paths:
+      - 'index.html'
+      - 'CANDIDATE.json'
+      - 'ASSETS_SHA256.json'
+      - 'tools/package_release_b112.py'
+      - '.github/workflows/release-b112.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  paquete:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Comprobar HTML, backend STAGING, nombres y tiempos individuales
+        run: python tools/package_release_b112.py
+      - name: Guardar ZIP completo con 188 audios y hashes
+        uses: actions/upload-artifact@v4
+        with:
+          name: MAMBAPALABRA-B1-12-STAGING-ZIP
+          path: dist/MAMBAPALABRA_B1_12_STAGING.zip
+          retention-days: 30
