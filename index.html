@@ -169,7 +169,9 @@ input,select{background:#302082;color:#fff;border-color:#7268cc}input::placehold
   .game .time-orb strong{font-size:20px!important}
   .game .orb-name{font-size:9px!important}
   .game .orb-score{font-size:9px!important}
-  .game .player-card.active{justify-content:flex-start!important}
+  .game .player-card.active{justify-content:flex-start!important;align-items:center!important}
+  .game .player-card.active .rosco{width:min(var(--ring-size,220px),220px)!important;flex:none!important}
+  .game .letter-chip{width:var(--chip-size,19px)!important;height:var(--chip-size,19px)!important;margin:calc(var(--chip-size,19px) / -2)!important;font-size:10px!important}
   .game .question-card{max-height:120px!important}
   .game .b1-actions button:not([hidden]){min-height:35px!important}
 }
@@ -1637,7 +1639,8 @@ Object.assign(STATIC_AUDIO,{"A: Dicho de un sabor intenso y desagradable, como e
     const card=game.active===0?els.cardMamba:els.cardFacu;
     const availableHeight=Math.max(0,Math.min(board.clientHeight,window.innerHeight-(board.getBoundingClientRect().top)-Math.max(70,metrics?.offsetHeight||0)-12)-(metrics?.offsetHeight||0)-14);
     const availableWidth=Math.max(0,Math.min(board.clientWidth,window.innerWidth)-24);
-    const size=Math.max(0,Math.min(390,availableHeight,availableWidth));
+    const landscape=window.innerWidth>window.innerHeight&&window.innerHeight<=500;
+    const size=Math.max(0,Math.min(landscape?220:390,availableHeight,availableWidth));
     if(size<100){card.style.setProperty("--ring-size","0px");return;}
     card.style.setProperty("--ring-size",size+"px");
     card.style.setProperty("--chip-size",Math.min(30,size*.09)+"px");
