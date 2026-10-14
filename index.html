@@ -160,6 +160,19 @@ input,select{background:#302082;color:#fff;border-color:#7268cc}input::placehold
 @media(max-height:700px){.game .stage-metrics{min-height:72px}.game .player-time{gap:3px}}
 /* B1.13: rosco primero; métricas debajo; centro solo nombre. */
 .game .status{display:none!important}
+@media(max-height:500px) and (orientation:landscape){
+  .game{height:calc(100dvh - 46px)!important;gap:3px!important}
+  .game .boards{grid-template-columns:minmax(0,1fr) 132px!important;grid-template-rows:minmax(0,1fr)!important;gap:5px!important}
+  .game .stage-metrics{grid-column:2!important;display:flex!important;flex-direction:column;justify-content:center;gap:4px!important;min-height:0!important}
+  .game .player-time{gap:1px!important}
+  .game .time-orb{width:46px!important;height:46px!important}
+  .game .time-orb strong{font-size:20px!important}
+  .game .orb-name{font-size:9px!important}
+  .game .orb-score{font-size:9px!important}
+  .game .player-card.active{justify-content:flex-start!important}
+  .game .question-card{max-height:120px!important}
+  .game .b1-actions button:not([hidden]){min-height:35px!important}
+}
 .game .player-card.active .rosco{flex:0 0 auto}
 .game .question-card{max-height:min(34dvh,240px);overflow:auto;min-height:0}
 .game .question{min-height:0!important}
@@ -1622,10 +1635,10 @@ Object.assign(STATIC_AUDIO,{"A: Dicho de un sabor intenso y desagradable, como e
     const board=els.game.querySelector(".boards");
     const metrics=board.querySelector(".stage-metrics");
     const card=game.active===0?els.cardMamba:els.cardFacu;
-    const availableHeight=Math.max(0,board.clientHeight-(metrics?.offsetHeight||0)-14);
+    const availableHeight=Math.max(0,Math.min(board.clientHeight,window.innerHeight-(board.getBoundingClientRect().top)-Math.max(70,metrics?.offsetHeight||0)-12)-(metrics?.offsetHeight||0)-14);
     const availableWidth=Math.max(0,Math.min(board.clientWidth,window.innerWidth)-24);
     const size=Math.max(0,Math.min(390,availableHeight,availableWidth));
-    if(size<100)return;
+    if(size<100){card.style.setProperty("--ring-size","0px");return;}
     card.style.setProperty("--ring-size",size+"px");
     card.style.setProperty("--chip-size",Math.min(30,size*.09)+"px");
     card.style.setProperty("--center-letter-size",Math.min(46,size*.17)+"px");
