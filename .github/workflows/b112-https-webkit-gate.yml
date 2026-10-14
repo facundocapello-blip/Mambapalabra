@@ -1,0 +1,58 @@
+name: B1.12 HTTPS staging two-player WebKit gate
+on:
+  workflow_dispatch:
+    inputs:
+      staging_url:
+        description: HTTPS URL containing the exact B1.12 staging build
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  webkit-two-player:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate HTTPS URL and candidate identity
+        env:
+          STAGING_URL: ${{ inputs.staging_url }}
+        run: |
+          python - <<'PY'
+          import json, os, urllib.parse, urllib.request, hashlib
+          url=os.environ['STAGING_URL'].rstrip('/')+'/'
+          u=urllib.parse.urlsplit(url)
+          assert u.scheme=='https' and u.hostname
+          assert u.hostname not in ('mambapalabra-b1-candidata.floot.app',), 'Production URL is forbidden'
+          local=json.load(open('CANDIDATE.json'))
+          assert local['candidate']=='B1.12' and local['online']=='staging'
+          with urllib.request.urlopen(url+'CANDIDATE.json', timeout=25) as res:
+              remote=json.load(res)
+          assert remote['candidate']==local['candidate']
+          assert remote['online']=='staging'
+          assert remote['index_sha256']==local['index_sha256'], 'Wrong build deployed'
+          with urllib.request.urlopen(url+'index.html',timeout=25) as res:
+              served=res.read()
+          assert hashlib.sha256(served).hexdigest()==local['index_sha256'], 'HTML mismatch'
+          assert b'mcrnstwmubtiiacyiaeu' not in served, 'Production backend found'
+          print('Verified HTTPS STAGING candidate hash:',local['index_sha256'])
+          PY
+      - name: Install Playwright WebKit
+        run: |
+          pip install playwright==1.62.0
+          python -m playwright install --with-deps webkit
+      - name: Two-player online test on deployed HTTPS build
+        env:
+          MAMBA_BROWSER: webkit
+          MAMBA_STAGING_URL: ${{ inputs.staging_url }}
+        run: python tests/test_staging_live_ui.py
+      - name: Upload failure screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: b112-webkit-evidence
+          path: artifacts/online-staging/
+          if-no-files-found: ignore
