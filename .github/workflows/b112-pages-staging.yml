@@ -1,0 +1,38 @@
+name: B1.12 - publish isolated Pages staging
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+jobs:
+  publish:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify exact B1.12 build and audio hashes
+        run: python tools/package_release_b112.py
+      - name: Prepare Pages root from verified ZIP
+        run: |
+          mkdir -p _site
+          python - <<'PY'
+          from zipfile import ZipFile
+          with ZipFile('dist/MAMBAPALABRA_B1_12_STAGING.zip') as z:
+              z.extractall('_site')
+          PY
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4

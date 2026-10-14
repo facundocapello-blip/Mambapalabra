@@ -1,0 +1,31 @@
+name: B1.12 staging preview
+on:
+  workflow_dispatch:
+  push:
+    branches: [qa/b112-guest-voice-handoff]
+    paths:
+      - '.github/workflows/b112-staging-preview.yml'
+      - 'CANDIDATE.json'
+      - 'index.html'
+permissions:
+  contents: read
+jobs:
+  candidate-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate staging candidate
+        run: |
+          python -c "import json; d=json.load(open('CANDIDATE.json')); assert d['candidate']=='B1.12' and d['online']=='staging'"
+      - name: Package checked candidate
+        run: python tools/package_release_b112.py
+      - name: Upload staging candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: mambapalabra-b112-staging
+          path: dist/MAMBAPALABRA_B1_12_STAGING.zip
+          retention-days: 14

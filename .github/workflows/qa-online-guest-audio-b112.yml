@@ -1,0 +1,30 @@
+name: QA B1.12 narración y turnos online (sin desplegar)
+on:
+  push:
+    branches: [qa/b112-guest-voice-handoff]
+    paths:
+      - "tests/test_online_guest_audio_b112.py"
+      - ".github/workflows/qa-online-guest-audio-b112.yml"
+  pull_request:
+    branches: [candidata-https-b111]
+permissions:
+  contents: read
+jobs:
+  guest-audio:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install playwright==1.62.0
+      - run: python -m playwright install --with-deps ${{ matrix.browser }}
+      - name: Probar conductor y permisos en dos sesiones remotas
+        env:
+          MAMBA_BROWSER: ${{ matrix.browser }}
+        run: python tests/test_online_guest_audio_b112.py
