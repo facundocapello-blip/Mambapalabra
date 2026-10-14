@@ -175,6 +175,7 @@ input,select{background:#302082;color:#fff;border-color:#7268cc}input::placehold
   .game .player-card.active{height:auto!important;min-height:220px!important;max-height:none!important;align-self:start!important}
   .game .player-card.active .rosco{translate:0 0!important}
   .game .stage-metrics{align-self:start!important;justify-content:flex-start!important}
+  .game .player-card.active .rosco{transform:translateY(max(0px, calc(10px - var(--ring-viewport-top, 0px))))!important}
   .game .letter-chip{width:16px!important;height:16px!important;margin:-8px!important;font-size:9px!important;border-width:1px!important}
   .game .question-card{max-height:120px!important}
   .game .b1-actions button:not([hidden]){min-height:35px!important}
@@ -1647,6 +1648,13 @@ Object.assign(STATIC_AUDIO,{"A: Dicho de un sabor intenso y desagradable, como e
     const size=Math.max(0,Math.min(landscape?220:390,availableHeight,availableWidth));
     if(size<100){card.style.setProperty("--ring-size","0px");return;}
     card.style.setProperty("--ring-size",size+"px");
+    if(landscape){
+      requestAnimationFrame(()=>{
+        const ring=card.querySelector(".rosco");if(!ring)return;
+        const top=ring.getBoundingClientRect().top;
+        card.style.setProperty("--ring-viewport-top",top+"px");
+      });
+    }
     card.style.setProperty("--chip-size",Math.min(30,size*.09)+"px");
     card.style.setProperty("--center-letter-size",Math.min(46,size*.17)+"px");
     card.style.setProperty("--center-name-size",Math.min(16,size*.063)+"px");
