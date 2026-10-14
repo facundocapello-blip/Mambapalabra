@@ -68,6 +68,12 @@ jobs:
               browser.close()
           PY
 
+      - name: Prueba E2E real de dos jugadores en WebKit contra la URL entregable
+        env:
+          MAMBA_BROWSER: webkit
+          MAMBA_STAGING_URL: ${{ inputs.staging_url }}
+        run: python tests/test_staging_live_ui.py
+
       - name: Resultado de entrega
         run: |
           echo "QA automatico OK."
