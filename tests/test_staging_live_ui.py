@@ -2,7 +2,7 @@
 import os
 from pathlib import Path
 from playwright.sync_api import sync_playwright
-URL="https://facundocapello-blip.github.io/Mambapalabra/"
+URL=os.environ.get("MAMBA_STAGING_URL","https://facundocapello-blip.github.io/Mambapalabra/").rstrip("/")+"/"
 STAGING="qbzrqinnhrgeqvgtifrt"
 PRODUCTION="mcrnstwmubtiiacyiaeu"
 def run():
