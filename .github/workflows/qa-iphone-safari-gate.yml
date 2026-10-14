@@ -1,0 +1,81 @@
+name: QA Gate - candidata lista para iPhone Safari
+
+on:
+  workflow_dispatch:
+    inputs:
+      staging_url:
+        description: "URL HTTPS exacta de la candidata en STAGING"
+        required: true
+        type: string
+      candidate:
+        description: "Version candidata (ej. B1.12)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  iphone-safari-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validar version y URL de STAGING
+        env:
+          STAGING_URL: ${{ inputs.staging_url }}
+          CANDIDATE: ${{ inputs.candidate }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from urllib.parse import urlparse
+          data=json.load(open("CANDIDATE.json", encoding="utf-8"))
+          assert data["candidate"] == os.environ["CANDIDATE"], (data["candidate"], os.environ["CANDIDATE"])
+          assert data["online"] == "staging", data["online"]
+          u=urlparse(os.environ["STAGING_URL"])
+          assert u.scheme == "https" and u.netloc, "STAGING_URL debe ser HTTPS"
+          print("Candidate:", data["candidate"])
+          print("STAGING:", os.environ["STAGING_URL"])
+          PY
+
+      - name: Instalar Playwright WebKit
+        run: |
+          pip install playwright==1.62.0
+          python -m playwright install --with-deps webkit
+
+      - name: Smoke test WebKit mobile sobre la URL entregable
+        env:
+          STAGING_URL: ${{ inputs.staging_url }}
+        run: |
+          python - <<'PY'
+          import os
+          from playwright.sync_api import sync_playwright
+          url=os.environ["STAGING_URL"]
+          with sync_playwright() as p:
+              browser=p.webkit.launch()
+              page=browser.new_page(viewport={"width":430,"height":932}, is_mobile=True, has_touch=True)
+              response=page.goto(url, wait_until="domcontentloaded", timeout=45000)
+              assert response is not None and response.ok, f"HTTP invalido: {response.status if response else 'sin respuesta'}"
+              page.wait_for_timeout(1500)
+              assert page.locator("body").is_visible()
+              assert len(page.content()) > 1000
+              print("WebKit mobile OK:", url)
+              browser.close()
+          PY
+
+      - name: Prueba E2E real de dos jugadores en WebKit contra la URL entregable
+        env:
+          MAMBA_BROWSER: webkit
+          MAMBA_STAGING_URL: ${{ inputs.staging_url }}
+        run: python tests/test_staging_live_ui.py
+
+      - name: Resultado de entrega
+        run: |
+          echo "QA automatico OK."
+          echo "La candidata queda habilitada para prueba fisica en Safari/iPhone."
+          echo "La prueba fisica sigue siendo obligatoria para audio, microfono, permisos, touch, fullscreen y multiplayer."
