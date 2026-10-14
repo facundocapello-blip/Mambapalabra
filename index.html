@@ -17,7 +17,7 @@
 <meta name="format-detection" content="telephone=no" />
 
 <title>MAMBAPALABRA</title>
-<meta name="mambapalabra-version" content="B1.12-DOS-RELOJES-STAGING">
+<meta name="mambapalabra-version" content="B1.13-ROSCO-PROTAGONISTA-STAGING">
 
 
 
@@ -1273,7 +1273,7 @@ Object.assign(STATIC_AUDIO,{"A: Dicho de un sabor intenso y desagradable, como e
     if(norm==="pasapalabra"||norm==="pasa palabra"){doPass(true);return;}
 
     if(isCorrect(item,answer)){
-      item.state="correct";player().correct++;advanceWithinPlayer();tone("good");showFeedback("good","CORRECTO","",420);toast("Correcto");
+      item.state="correct";player().correct++;advanceWithinPlayer();tone("good");showFeedback("good","CORRECTO","",850);toast("Correcto");
       const next=currentItem();setTurnState(TURN_STATE.SWITCHING);
       if(next){syncUI();turnPrompt("Correcto.");}
       else{
@@ -1290,7 +1290,10 @@ Object.assign(STATIC_AUDIO,{"A: Dicho de un sabor intenso y desagradable, como e
       // La devolución pertenece al jugador que respondió, no al receptor del turno.
       // No transferir la autoridad online hasta terminar el audio de corrección.
       const wrongInstance=game;
+      const wrongFeedbackStarted=performance.now();
       const wrongResult=await hostSpeak(wrongLead);
+      // Mantener la solución visible incluso cuando el audio grabado sea breve.
+      await new Promise(resolve=>setTimeout(resolve,Math.max(0,3000-(performance.now()-wrongFeedbackStarted))));
       if(game!==wrongInstance||game.over||!readingCanFinish(wrongResult))return;
       if(otherItem){
         game.active=other;syncUI();turnPrompt("",true);
