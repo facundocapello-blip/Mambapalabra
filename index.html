@@ -161,9 +161,9 @@ input,select{background:#302082;color:#fff;border-color:#7268cc}input::placehold
 /* B1.13: rosco primero; métricas debajo; centro solo nombre. */
 .game .status{display:none!important}
 @media(max-height:500px) and (orientation:landscape){
-  .game{height:calc(100dvh - 46px)!important;gap:3px!important}
+  .game{position:fixed!important;top:46px!important;left:0!important;right:0!important;bottom:0!important;height:auto!important;overflow:auto!important;gap:3px!important;padding:2px 8px!important;z-index:2!important}
   .game .boards{grid-template-columns:minmax(0,1fr) 132px!important;grid-template-rows:minmax(0,1fr)!important;gap:5px!important}
-  .game .stage-metrics{grid-column:2!important;display:flex!important;flex-direction:column;justify-content:center;gap:4px!important;min-height:0!important}
+  .game .stage-metrics{grid-column:2!important;display:flex!important;flex-direction:column;justify-content:flex-start;gap:4px!important;min-height:0!important}
   .game .player-time{gap:1px!important}
   .game .time-orb{width:46px!important;height:46px!important}
   .game .time-orb strong{font-size:20px!important}
@@ -173,7 +173,7 @@ input,select{background:#302082;color:#fff;border-color:#7268cc}input::placehold
   .game .player-card.active .rosco{width:min(var(--ring-size,220px),220px)!important;flex:none!important;position:relative!important;top:0!important;transform:none!important;margin:0 auto!important}
   .game .boards{overflow:visible!important;align-content:start!important;align-items:start!important}
   .game .player-card.active{height:auto!important;min-height:220px!important;max-height:none!important;align-self:start!important}
-  .game .player-card.active .rosco{translate:0 0!important}
+  .game .player-card.active .rosco{translate:0 0!important;transform:none!important}
   .game .stage-metrics{align-self:start!important;justify-content:flex-start!important}
   .game .player-card.active .rosco{transform:translateY(max(0px, calc(10px - var(--ring-viewport-top, 0px))))!important}
   .game .letter-chip{width:16px!important;height:16px!important;margin:-8px!important;font-size:9px!important;border-width:1px!important}
