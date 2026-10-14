@@ -158,6 +158,31 @@ input,select{background:#302082;color:#fff;border-color:#7268cc}input::placehold
 .game .player-time .time-orb strong{font-variant-numeric:tabular-nums}
 .game .orb-name{font-size:12px;line-height:1.1;font-weight:700;color:#e3dfff;max-width:145px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center}
 @media(max-height:700px){.game .stage-metrics{min-height:72px}.game .player-time{gap:3px}}
+/* B1.13: rosco primero; métricas debajo; centro solo nombre. */
+.game .scoreline{display:none!important}
+.game .active-name,.game .active-meta{display:none!important}
+.game .boards{min-height:0}
+.game .player-card.active{overflow:visible}
+.game .player-card.active .rosco{margin:0 auto;width:min(var(--ring-size,390px),100%);max-width:100%;aspect-ratio:1}
+.game .rosco-center strong{display:none!important}
+.game .rosco-center span{position:absolute!important;top:50%!important;left:7%!important;right:7%!important;transform:translateY(-50%);font-size:clamp(13px,3.8vw,22px)!important;font-weight:900;line-height:1.12;overflow-wrap:anywhere}
+.game .stage-metrics{display:grid!important;grid-template-columns:1fr 1fr;justify-items:center;align-items:start;min-height:0!important;padding:0!important;gap:8px}
+.game .player-time{width:100%;max-width:100%;gap:4px!important;align-items:center}
+.game .time-orb{width:clamp(58px,16vw,78px);height:clamp(58px,16vw,78px);border-radius:50%;font-variant-numeric:tabular-nums}
+.game .time-orb strong{font-size:clamp(23px,7vw,31px);line-height:1;display:block;text-align:center}
+.game .orb-name{font-size:11px;max-width:42vw;text-align:center}
+.game .orb-score{font-size:10px;font-weight:750;color:#c8d4fa;line-height:1.1;text-align:center}
+.game .time-orb.active-turn{border-color:#fff;box-shadow:0 0 0 3px #ffda6280,0 0 15px #ffda6260}
+.game .time-orb.active-turn.danger{animation:b113-pulse .8s ease-in-out infinite alternate}
+@keyframes b113-pulse{to{box-shadow:0 0 0 5px #ff4c6b99,0 0 22px #ff4c6b}}
+.game .letter-chip.correct{animation:b113-correct .35s ease-out}
+.game .letter-chip.wrong{animation:b113-wrong .35s ease-out}
+@keyframes b113-correct{50%{filter:brightness(1.5);transform:scale(1.13)}}
+@keyframes b113-wrong{25%,75%{filter:brightness(1.35)}}
+.end:not([hidden]) #winnerText{animation:b113-winner .65s ease-out}
+@keyframes b113-winner{from{opacity:0;transform:translateY(12px) scale(.94)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.game .time-orb,.game .letter-chip,.end #winnerText{animation:none!important}}
+@media(max-width:760px){.game{grid-template-rows:minmax(0,1fr) auto!important}.game .boards{grid-template-rows:minmax(0,1fr) auto;gap:4px}.game .player-card.active{min-height:0}.game .stage-metrics{min-height:0}.game .player-card.active .rosco{width:min(var(--ring-size,390px),100%)}}
 </style>
 </head>
 <body>
@@ -266,7 +291,7 @@ input,select{background:#302082;color:#fff;border-color:#7268cc}input::placehold
         </div>
       </article>
 
-      <div class="stage-metrics"><div class="player-time"><div id="orbP1" class="time-orb"><strong id="orbTimer1">150</strong></div><span id="orbName1" class="orb-name">Mamba</span></div><div class="player-time"><div id="orbP2" class="time-orb"><strong id="orbTimer2">150</strong></div><span id="orbName2" class="orb-name">Facu</span></div></div>
+      <div class="stage-metrics"><div class="player-time"><div id="orbP1" class="time-orb"><strong id="orbTimer1">150</strong></div><span id="orbName1" class="orb-name">Mamba</span><span id="orbScore1" class="orb-score">✓ 0 · ✕ 0</span></div><div class="player-time"><div id="orbP2" class="time-orb"><strong id="orbTimer2">150</strong></div><span id="orbName2" class="orb-name">Facu</span><span id="orbScore2" class="orb-score">✓ 0 · ✕ 0</span></div></div>
     </section>
 
     <section class="card question-card">
@@ -846,8 +871,8 @@ Object.assign(STATIC_AUDIO,{"A: Dicho de un sabor intenso y desagradable, como e
     els.orbTimer2.textContent=String(Math.max(0,Math.ceil(t2/1000)));
     els.orbP1.classList.toggle("active-turn",game.active===0);
     els.orbP2.classList.toggle("active-turn",game.active===1);
-    els.orbP1.classList.toggle("danger",t1<=30000);
-    els.orbP2.classList.toggle("danger",t2<=30000);
+    els.orbP1.classList.toggle("danger",t1<=15000);
+    els.orbP2.classList.toggle("danger",t2<=15000);
     const owner=game.timerOwner;
     if(!game.over&&!game.suddenDeath&&game.timerId&&owner!==null&&owner!==undefined&&
        (runId===game.timerRunId)&&effectiveTimeMs(owner)<=0)handleTimeUp(owner,game.timerRunId);
@@ -1212,6 +1237,8 @@ Object.assign(STATIC_AUDIO,{"A: Dicho de un sabor intenso y desagradable, como e
     els.activeName.textContent=p.name;if(els.railPlayer)els.railPlayer.textContent=p.name;els.currentLetter.textContent=item.letter;els.question.textContent=item.clue;els.transcript.textContent="Esperando respuesta…";els.text.value="";
     const cm=currentItemFor(game.players[0]),cf=currentItemFor(game.players[1]);els.centerMamba.textContent=cm?cm.letter:"✓";els.centerFacu.textContent=cf?cf.letter:"✓";
     els.scoreMamba.textContent=game.players[0].correct;els.scoreFacu.textContent=game.players[1].correct;
+    $("#orbScore1").textContent="✓ "+game.players[0].correct+" · ✕ "+game.players[0].wrong;
+    $("#orbScore2").textContent="✓ "+game.players[1].correct+" · ✕ "+game.players[1].wrong;
     $("#wrongMamba").textContent=game.players[0].wrong;$("#wrongFacu").textContent=game.players[1].wrong;
     ["Mamba","Facu"].forEach((slot,idx)=>{
       const pp=game.players[idx];$("#stats"+slot).textContent=`${pp.correct} bien · ${pp.wrong} mal · ${pp.items.filter(x=>x.state==="pending").length} pendientes`;
@@ -1236,7 +1263,7 @@ Object.assign(STATIC_AUDIO,{"A: Dicho de un sabor intenso y desagradable, como e
     // including a final transcript after onspeechend paused the timer.
     game.timerOwner=game.active;handleTimeUp(game.active,game.timerRunId);return false;
   }
-  function submitAnswer(raw,fromRecognition=false){
+  async function submitAnswer(raw,fromRecognition=false){
     if(!game||game.over||isLocalPaused()||game.suddenDeath||!isMyOnlineTurn()||(!fromRecognition&&game.turnState!==TURN_STATE.ANSWERING))return;
     if(!answerTimeAvailable())return;
     const item=currentItem();if(!item)return;
@@ -1258,14 +1285,17 @@ Object.assign(STATIC_AUDIO,{"A: Dicho de un sabor intenso y desagradable, como e
       const previousOwner=game.active;
       item.state="wrong";player().wrong++;advanceWithinPlayer();tone("bad");
       const expected=item.answer,wrongLead=`Incorrecto. Era ${expected}.`,other=1-previousOwner;
-      toast("Incorrecto. Era "+expected);showFeedback("bad","INCORRECTO","ERA: "+expected.toUpperCase(),650);setTurnState(TURN_STATE.SWITCHING);
+      toast("Incorrecto. Era "+expected);showFeedback("bad","INCORRECTO","ERA: "+expected.toUpperCase(),3000);setTurnState(TURN_STATE.SWITCHING);
       const otherItem=currentItemFor(game.players[other]);
+      // La devolución pertenece al jugador que respondió, no al receptor del turno.
+      // No transferir la autoridad online hasta terminar el audio de corrección.
+      const wrongInstance=game;
+      const wrongResult=await hostSpeak(wrongLead);
+      if(game!==wrongInstance||game.over||!readingCanFinish(wrongResult))return;
       if(otherItem){
-        // El cambio de jugador es inmediato; después habla el conductor.
-        game.active=other;syncUI();
-        turnPrompt(wrongLead,true);
+        game.active=other;syncUI();turnPrompt("",true);
       }else if(currentItemFor(game.players[previousOwner])){
-        game.active=previousOwner;syncUI();turnPrompt(wrongLead);
+        game.active=previousOwner;syncUI();turnPrompt("");
       }else finishOrSudden();
     }
   }
@@ -1590,10 +1620,10 @@ Object.assign(STATIC_AUDIO,{"A: Dicho de un sabor intenso y desagradable, como e
     }
     const card=game.active===0?els.cardMamba:els.cardFacu;
     const head=card.querySelector(".player-head"),height=card.clientHeight-(head?.offsetHeight||0)-24;
-    const size=Math.max(0,Math.min(card.clientWidth-22,height));
+    const size=Math.max(0,Math.min(card.clientWidth-10,height,window.innerWidth-28));
     if(size===0)return;
     card.style.setProperty("--ring-size",size+"px");
-    card.style.setProperty("--chip-size",Math.min(30,size*.095)+"px");
+    card.style.setProperty("--chip-size",Math.min(30,size*.092)+"px");
     card.style.setProperty("--center-letter-size",Math.min(46,size*.17)+"px");
     card.style.setProperty("--center-name-size",Math.min(16,size*.063)+"px");
   }
