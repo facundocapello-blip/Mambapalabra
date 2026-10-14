@@ -1,11 +1,18 @@
 name: B1.12 staging preview
 on:
   workflow_dispatch:
+  push:
+    branches: [qa/b112-guest-voice-handoff]
+    paths:
+      - '.github/workflows/b112-staging-preview.yml'
+      - 'CANDIDATE.json'
+      - 'index.html'
 permissions:
   contents: read
 jobs:
   candidate-check:
     runs-on: ubuntu-latest
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
