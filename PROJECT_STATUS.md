@@ -15,3 +15,7 @@ No inferir versión vigente desde nombres de ZIP ni READMEs históricos. Verific
 ## Pendiente
 - Identificar con evidencia la versión realmente desplegada y su fuente exacta.
 - Registrar prueba de carga y, por separado, validación en Safari físico.
+
+## Reconsulta de hosting (2026-10-15)
+- Floot confirmó nuevamente published=true para https://mambapalabra-b1-candidata.floot.app.
+- El nombre de proyecto Floot figura como B1.11, pero esto no certifica que el contenido servido sea esa versión. Identificador de build efectivo pendiente de inspección.
