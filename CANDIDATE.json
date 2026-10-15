@@ -1,10 +1,11 @@
 {
-  "candidate": "B1.12",
-  "source_commit": "65aa00153fb744004f890900640363cbbe524ebd",
+  "candidate": "B1.13.1-RC1",
+  "source_commit": "local fix/b1131-final-qa; base 277810c + adjunto SHA256 0ec31217a1109b11a1b91af9145406909ae07ba45e2c7b2adcb68a579e1ac50b",
   "asset_prefix": "/Mambapalabra/",
   "mp3": 188,
   "online": "staging",
-  "index_sha256": "8d296413181b294d54aa08123c08667e8ddcef4e240c822654a3f628b11180a3",
+  "index_sha256": "465e091e3ae8d55416565fe8c7b81b30f9f937d00338d527b98fd991abf741c8",
   "staging_project": "qbzrqinnhrgeqvgtifrt",
-  "revision": "Dos relojes fijos por jugador; micrófono solo con RESPONDER; backend STAGING"
+  "revision": "Corrección mínima de geometría horizontal, tamaño de letras y estabilidad del rosco; sin cambios de banco ni audio.",
+  "source_archive": "Mambapalabra-B1.13.1-Candidata.zip"
 }
