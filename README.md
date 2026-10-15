@@ -1,6 +1,8 @@
-# MAMBAPALABRA — Codex / estabilización B1.11
+# MAMBAPALABRA — documentación histórica de estabilización B1.11
 
-**Versión publicada:** B1.11 · https://mambapalabra-b1-candidata.floot.app/
+> **Estado vigente:** el usuario confirmó B1.13.1 como versión aprobada, con pruebas y validaciones OK (15/10/2026). Este README describe solamente la base histórica B1.11; ver [PROJECT_STATUS.md](PROJECT_STATUS.md). No usar B1.11 como fuente para cambios nuevos.
+
+**Referencia de publicación:** https://mambapalabra-b1-candidata.floot.app/
 
 **No modificar producción.** Este repositorio fue preparado para trabajar en una rama de estabilización, manteniendo intacto el juego publicado.
 
