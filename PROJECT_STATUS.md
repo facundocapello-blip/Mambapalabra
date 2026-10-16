@@ -41,3 +41,11 @@ Actualizado: 2026-10-15.
 - **Comprobado:** typecheck Floot limpio; despliegue Floot exitoso, HTTP 200 sobre URL de staging; en VM remoto applyPatch genera HTML con SHA esperado. Chromium local ejecutó lobby → partida y geometría del rosco (27 letras) en 932×430, 667×375 y 430×932; ancho sin desborde, controles 46px horizontal/50px vertical y cero errores de JavaScript tras adaptar el UUID al entorno local inseguro.
 - **Pendiente exclusivo de UX1:** reproducción real desde web publicada en Safari físico, micrófono por voz, secuencia online con dos sesiones, fin de tiempo y muerte súbita; no afirmar que estas se reejecutaron. Navegador de preview Floot no disponible porque el usuario no tenía la pestaña abierta; se ensayó Chromium local.
 - Floot rechazó duplicar el ZIP por cuota de almacenamiento de la cuenta: solución sin gastos usa descarga pública inmutable verificada por hash. Fuente aprobada y 188 audios sin cambios.
+
+## Banco maestro en UX1 STAGING (2026-10-15)
+- Comparado el archivo de Proyecto `MAMBAPALABRA - Banco de Definiciones`, pestaña `Banco`: 223 registros, **194 APROBADA**, 29 DESCARTADA. Las 194 aprobadas ya estaban en `QUESTION_POOL` con texto y reglas idénticas, pero 101 quedaban deshabilitadas por no tener dos MP3 grabados.
+- Cambio mínimo: `ACTIVE_QUESTION_POOL=QUESTION_POOL.slice()`; quedan **305 definiciones disponibles** (194 aprobadas + 111 YouTube existentes), sin duplicados ni descartadas. Los 188 MP3 se conservan; 101 definiciones sin audio usan el mecanismo TTS local ya existente.
+- Parche separado: https://github.com/facundocapello-blip/mambapalabra-staging/blob/ux/b1131-presenter-iphone/qa/B1.13.1-UX1-BANCO194.patch
+- Pruebas: igualdad 194/194 contra Excel, cero duplicados, JavaScript compilado en VM, hash SHA256 HTML `e9f03e8c0fb62d4cec6867efc2c4e4e03d8b8f1edf8cb7d5027794d1044d6546`, typecheck limpio. Navegador Playwright localhost bloqueado por el entorno; Safari iPhone/voz de esta actualización pendiente de comprobación directa.
+- Publicación confirmada por Floot (URL HTTPS y HTTP 200): https://mambapalabra-b1131-ux1-staging.floot.app/ . Checkpoint anterior UX1 `2370d6a8-17b0-4935-ad5f-b8f53e671631`; checkpoint nueva versión `6accf0c4-531f-4d40-a1f7-59454a90036f`.
+- **No se modificó producción:** https://facundocapello-blip.github.io/Mambapalabra/
