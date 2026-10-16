@@ -24,3 +24,10 @@ Actualizado: 2026-10-15.
 - Evitar reauditar pruebas ya aprobadas sin cambios; hacer diagnóstico y regresión acotados ante fallos nuevos.
 - Conservar la publicación existente, un mecanismo de rollback y la separación entre staging y producción.
 - Para cambios interactivos, entregar URL HTTPS publicada y distinguir validación automatizada de prueba en Safari físico.
+
+## Iteración UX1 (2026-10-15) — NO publicada
+- Base exacta localizada en Biblioteca: `Mambapalabra-B1.13.1-RC1.zip` (194 entradas/188 MP3; SHA256 ZIP `89fa0a512c42d66f58aa29e82e99ce40d62e315fbf314838fd54446e7ba70fcf`).
+- Se creó la candidata `B1.13.1-RC1-UX1-STAGING`, con transiciones de voz más naturales e iPhone horizontal más legible. Se conservaron MP3, banco, reglas, configuración de Supabase y versión aprobada.
+- Paquete completo guardado en Biblioteca `/Pasapalabra/Mambapalabra-B1.13.1-UX1-STAGING.zip`; parche y QA en PR borrador de staging https://github.com/facundocapello-blip/mambapalabra-staging/pull/1.
+- Chromium automatizado (DOM inyectado): geometría de rosco y controles en 932×430, 667×375 y 430×932; correcta, incorrecta y Pasapalabra; tiempos de locución simulada 192 ms/130 ms con reloj detenido en READING: OK. MP3 reales, dos sesiones online y Safari físico UX1 no se revalidaron.
+- **No se publicó UX1.** Floot gratuito no permite crear otro proyecto (límite 5). La rama de staging es borrador, sin merge ni despliegue. La URL de producción conserva su estado anterior.
