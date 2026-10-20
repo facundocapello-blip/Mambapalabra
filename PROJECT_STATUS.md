@@ -2,6 +2,17 @@
 
 Actualizado: 2026-10-20 (estado Fish398 RC3; historial anterior preservado).
 
+## Fish398 RC4 — definiciones +8% (20/10/2026)
+
+- **Versión STAGING publicada:** `B1.13.1-UX1-FISH398-VOZ-UNICA-RC4-STAGING` en https://facundocapello-blip.github.io/mambapalabra-staging/ . Reemplaza a RC3 únicamente en STAGING; producción permanece intacta.
+- **Pedido y cambio acotado:** locución de definiciones **8% más rápida** que RC3, tanto en local como online y muerte súbita. Multiplicador `1.08` aplicado únicamente a `fish-bank/qNNNN.mp3`; tasa local pasa de `0.92` a `0.9936`, online de `1.0` a `1.08`. `preservesPitch` mantiene el tono. Saludos, frases de correcto/incorrecto, presentación y demás clips conservan la velocidad anterior.
+- **Sin regeneración:** los 819 MP3 Fish y 188 MP3 históricos mantienen **exactamente los mismos bytes**. Se cambió solo `index.html`, metadatos de versión y se añadió `FISH_SPEED_RELEASE.json`.
+- **Fuente del cambio:** `tools/package_fish_definition_speed_rc4.py` y `tools/qa_fish_definition_speed_rc4.py` en rama `qa/fish-voice-free-api-test`. El paquete RC4 se construyó desde el artefacto RC3 verificado, sin invocar Fish API.
+- **QA antes de publicar:** [workflow 39412672267](https://github.com/facundocapello-blip/mambapalabra-staging/actions/runs/39412672267), SUCCESS: sintaxis JS, 1007 MP3 intactos, velocidad selectiva, tono, intro, respuesta incorrecta, repetición, reloj, partida local, muerte súbita y reinicio en Chromium/WebKit (audio acelerado por mock para QA).
+- **Publicación y QA HTTPS:** [workflow 39413082764](https://github.com/facundocapello-blip/mambapalabra-staging/actions/runs/39413082764), deploy GitHub Pages SUCCESS y pruebas en Chromium/WebKit de carga, audio Fish, MP3, dos sesiones online reales y sincronización de turnos. El manifiesto publicado registra `definition_speed_multiplier:1.08`.
+- **Rollback:** [workflow RC3](https://github.com/facundocapello-blip/mambapalabra-staging/actions/workflows/deploy-fish-rc3-pages.yml) sigue disponible para restaurar la versión anterior de STAGING.
+- **Pendiente:** confirmar escucha subjetiva y micrófono en Safari iPhone físico; la automatización usa simulación de reproducción para pruebas de flujo.
+
 ## Fish398 RC3 — STAGING Pages (20/10/2026)
 
 - **Versión candidata aislada:** `B1.13.1-UX1-FISH398-VOZ-UNICA-RC3-STAGING`. URL: https://facundocapello-blip.github.io/mambapalabra-staging/ . Este es el STAGING más reciente verificado; el Floot UX1 anterior permanece como referencia histórica, **no** como el último STAGING.
