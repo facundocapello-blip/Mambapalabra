@@ -1,6 +1,19 @@
 # Estado de Mambapalabra
 
-Actualizado: 2026-10-15.
+Actualizado: 2026-10-20 (estado Fish398 RC3; historial anterior preservado).
+
+## Fish398 RC3 — STAGING Pages (20/10/2026)
+
+- **Versión candidata aislada:** `B1.13.1-UX1-FISH398-VOZ-UNICA-RC3-STAGING`. URL: https://facundocapello-blip.github.io/mambapalabra-staging/ . Este es el STAGING más reciente verificado; el Floot UX1 anterior permanece como referencia histórica, **no** como el último STAGING.
+- **Fuente del generador:** rama `qa/fish-voice-free-api-test` del repositorio `facundocapello-blip/mambapalabra-staging`; script `tools/generate_fish_bank.py`, motor `s2.1-pro-free` de Fish Audio. El workflow no debe volver a ejecutarse para regenerar material ya completado.
+- **Banco generado:** 398 definiciones del manifiesto `piper-audio/manifest.json` (no confundir con las 194 APROBADAS de la planilla maestra), 796 audios pregunta/error + 15 frases fijas = **811 MP3 Fish**. Se incorporaron **8 MP3 Fish adicionales** de introducciones y muerte súbita. Los **188 MP3 históricos** se conservaron como recursos; la reproducción RC3 utiliza exclusivamente los clips Fish configurados, sin fallback TTS del dispositivo.
+- **Evidencia de generación:** [workflow completo 39200425081](https://github.com/facundocapello-blip/mambapalabra-staging/actions/runs/39200425081), resultado SUCCESS; 811/811 MP3 decodificados con FFmpeg y texto/frase/hash validados. Artefacto conservado en GitHub Actions: `Mambapalabra-Fish-Bank-811-Partial-Or-Complete` (ID 12164722798).
+- **Evidencia de empaquetado RC3:** [workflow 39361651619](https://github.com/facundocapello-blip/mambapalabra-staging/actions/runs/39361651619), SUCCESS; 811 + 8 MP3 Fish, sin Piper ni TTS de dispositivo, regresiones Chromium y WebKit aprobadas. Artefacto `MAMBAPALABRA_FISH398_VOZ_UNICA_RC3_STAGING_QA` (ID 12237667442).
+- **Despliegue:** [workflow 39362004479](https://github.com/facundocapello-blip/mambapalabra-staging/actions/runs/39362004479), SUCCESS. [Smoke real HTTPS 39362154834](https://github.com/facundocapello-blip/mambapalabra-staging/actions/runs/39362154834), SUCCESS: manifiesto de versión, carga de intro/definición, MP3 descargable y turno habilitado en Chromium/WebKit.
+- **Online STAGING real:** [workflow 39362429990](https://github.com/facundocapello-blip/mambapalabra-staging/actions/runs/39362429990), SUCCESS en Chromium y WebKit con dos sesiones independientes y backend Supabase STAGING real: crear/unirse, puntaje sincronizado, error y cambio de turno, Pasapalabra del invitado y retorno. La duración del audio se simuló/aceleró para automatizar el recorrido.
+- **Partida completa:** [workflow 39362806027](https://github.com/facundocapello-blip/mambapalabra-staging/actions/runs/39362806027), SUCCESS en Chromium y WebKit: 54 respuestas incorrectas, empate, muerte súbita, ganador y reinicio local. Audio acelerado/simulado, no escucha acústica.
+- **Pendiente:** prueba de escucha y naturalidad de la locución Fish (especialmente pronunciación de nombres y letras) y micrófono real en Safari iPhone físico; la automatización no prueba el sonido real de parlantes ni reconocimiento de voz. Revancha online completa y desconexión/reconexión no están demostradas por estos workflows.
+- **Protección:** producción https://facundocapello-blip.github.io/Mambapalabra/ no se actualizó por este flujo. Mantener RC3 en STAGING hasta la aceptación de voz y QA físico; no volver a generar 811 audios ni mezclar la rama del generador con `main`.
 
 ## Versión vigente: B1.13.1 (confirmación del usuario)
 
