@@ -1,11 +1,23 @@
 # Estado de Mambapalabra
 
-Actualizado: 2026-10-20 (RC5 aprobada por el usuario como candidata STAGING; historial preservado).
+Actualizado: 2026-10-20 (RC6 publicada en STAGING y validada en CI; RC5 aprobada previamente; producción intacta).
+
+## Fish398 RC6 — definiciones ágiles y cambios de turno breves (20/10/2026)
+
+- **Versión STAGING actual:** `B1.13.1-UX1-FISH398-VOZ-UNICA-RC6-STAGING` — https://facundocapello-blip.github.io/mambapalabra-staging/ . RC5 queda como base aprobada para rollback; RC6 requiere todavía valoración de la escucha en iPhone y aprobación del usuario.
+- **Diagnóstico de lentitud comprobado en código:** RC5 reproducía preguntas a `0.92×1.12=1.0304` en local, y `1.12` en online. RC6 usa `playbackRate=1.22` absoluto para `fish-bank/qNNNN.mp3` en ambos modos, conservando `preservesPitch`. Intros y otras locuciones no se aceleran.
+- **Turnos breves:** tras respuesta incorrecta el conductor solo reproduce «Incorrecto.»; tras Pasapalabra (botón o comando de voz en el mismo flujo) solo «Pasapalabra.». No dice «Era [respuesta]» ni anuncia el siguiente jugador. La respuesta esperada sigue visible en la interfaz. La pausa adicional tras estas frases se elimina. En muerte súbita se usa también «Incorrecto.» sin recitar respuesta.
+- **Audios:** dos clips nuevos de Fish Audio `s2.1-pro-free`, misma referencia de voz que el banco. 811 MP3 del banco, 8 Fish previos, 2 Fish nuevos = **821 Fish**; los 188 MP3 históricos siguen incluidos. Los 1007 MP3 de RC5 no cambiaron byte a byte. Sin modelo pago ni regeneración del banco.
+- **Regresión previa:** [workflow 39529487189](https://github.com/facundocapello-blip/mambapalabra-staging/actions/runs/39529487189), SUCCESS: generación/decodificación de dos audios, hash, paquete íntegro, JS válido, Chromium/WebKit (velocidad, incorrecto/pasapalabra sin anuncios, repetición, relojes), partida completa, empate, muerte súbita, ganador y reinicio.
+- **Deploy y QA HTTPS:** [workflow 39529752200](https://github.com/facundocapello-blip/mambapalabra-staging/actions/runs/39529752200), SUCCESS: GitHub Pages, manifiesto `STAGING_BUILD.json`, 2 MP3 nuevos descargables, Chromium/WebKit en HTTPS y dos sesiones online reales (Supabase STAGING): puntuación, incorrecto, pasapalabra y retorno de turno.
+- **Fuente completa:** artefacto QA `MAMBAPALABRA_FISH398_VOZ_UNICA_RC6_STAGING_QA` (ID 12314412806); scripts `tools/generate_fish_turn_clips_rc6.py`, `tools/package_fish_rc6.py`, `tools/qa_fish_rc6.py`; matriz reutilizable `qa/RC6_REGRESSION.md` en `mambapalabra-staging`.
+- **Pendientes honestos:** calidad subjetiva de voz, comando por micrófono y Safari físico de iPhone; fin de tiempo y revancha online completos no se reejecutaron en RC6. Los tests de audio de jugabilidad usaron Audio simulado/acelerado, no audición real.
+- **Producción sin tocar:** https://facundocapello-blip.github.io/Mambapalabra/ . No promover RC6 sin autorización explícita.
 
 ## Fish398 RC5 — candidata STAGING aprobada (20/10/2026)
 
 - **Aprobación explícita del usuario:** «Sí aprobada», tras solicitar publicación y revisar el estado de pruebas de RC5. Aprobada como **candidata de STAGING**, no equivale a autorización de despliegue en producción.
-- **Versión publicada:** `B1.13.1-UX1-FISH398-VOZ-UNICA-RC5-STAGING` — https://facundocapello-blip.github.io/mambapalabra-staging/
+- **Versión histórica aprobada:** `B1.13.1-UX1-FISH398-VOZ-UNICA-RC5-STAGING` — reemplazada por RC6 en la URL STAGING; conservada como paquete y workflow de rollback.
 - **Único ajuste:** velocidad de definiciones Fish +12% frente a RC3 (multiplicador `1.12`, frente a `1.08` en RC4), sin alterar el resto de locuciones, ni regenerar MP3.
 - **QA automatizado:** [workflow 39438581046](https://github.com/facundocapello-blip/mambapalabra-staging/actions/runs/39438581046), SUCCESS: regresión de velocidad, flujo completo y muerte súbita en navegadores de CI.
 - **Deploy y QA HTTPS:** [workflow 39523263220](https://github.com/facundocapello-blip/mambapalabra-staging/actions/runs/39523263220), SUCCESS: Pages, manifiesto RC5, Chromium/WebKit y dos sesiones online reales en STAGING.
