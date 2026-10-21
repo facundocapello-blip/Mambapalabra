@@ -1,6 +1,16 @@
 # Estado de Mambapalabra
 
-Actualizado: 2026-10-20 (estado Fish398 RC3; historial anterior preservado).
+Actualizado: 2026-10-20 (RC5 aprobada por el usuario como candidata STAGING; historial preservado).
+
+## Fish398 RC5 — candidata STAGING aprobada (20/10/2026)
+
+- **Aprobación explícita del usuario:** «Sí aprobada», tras solicitar publicación y revisar el estado de pruebas de RC5. Aprobada como **candidata de STAGING**, no equivale a autorización de despliegue en producción.
+- **Versión publicada:** `B1.13.1-UX1-FISH398-VOZ-UNICA-RC5-STAGING` — https://facundocapello-blip.github.io/mambapalabra-staging/
+- **Único ajuste:** velocidad de definiciones Fish +12% frente a RC3 (multiplicador `1.12`, frente a `1.08` en RC4), sin alterar el resto de locuciones, ni regenerar MP3.
+- **QA automatizado:** [workflow 39438581046](https://github.com/facundocapello-blip/mambapalabra-staging/actions/runs/39438581046), SUCCESS: regresión de velocidad, flujo completo y muerte súbita en navegadores de CI.
+- **Deploy y QA HTTPS:** [workflow 39523263220](https://github.com/facundocapello-blip/mambapalabra-staging/actions/runs/39523263220), SUCCESS: Pages, manifiesto RC5, Chromium/WebKit y dos sesiones online reales en STAGING.
+- **Pendiente no declarado como probado:** pruebas directas del micrófono y experiencia acústica en Safari físico. La aprobación del usuario es de la candidata, sin atribuir un ensayo instrumental no realizado.
+- **Producción intacta:** https://facundocapello-blip.github.io/Mambapalabra/ . Mantener RC4 y RC3 disponibles para rollback en STAGING. No promover sin pedido explícito.
 
 ## Fish398 RC4 — definiciones +8% (20/10/2026)
 
