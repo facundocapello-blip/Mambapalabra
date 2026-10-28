@@ -1,6 +1,6 @@
 {
-  "version": "B1.13.1-UX1-FISH398-VOZ-UNICA-RC6-STAGING",
-  "source": "B1.13.1-UX1-FISH398-VOZ-UNICA-RC5-STAGING",
+  "version": "B1.13.1-UX1-FISH398-VOZ-UNICA-RC6",
+  "source": "B1.13.1-UX1-FISH398-VOZ-UNICA-RC5",
   "model": "s2.1-pro-free",
   "voice_id": "c4a325176443465ab0ba1b0cfa979995",
   "clips": [
@@ -21,5 +21,5 @@
   ],
   "turn_handoff": "short cues only, no answer recitation or player announcement",
   "definition_playback_rate": 1.22,
-  "scope": "STAGING only"
+  "scope": "Producción (local y online)"
 }

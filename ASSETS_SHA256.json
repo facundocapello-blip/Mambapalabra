@@ -1,6 +1,6 @@
 {
   "_cdn/static/31362222-7018-42b4-aa8d-7554039935b4-mambapalabra-monograma-final.png": "19eeb49688851afa993b153c82b5b47570ae60fabe91acc845d30bf64025e250",
-  "manifest.webmanifest": "1d7d1a852859a4a8b7a354960050fb9ba28b38f17cfe7fd3109490aa54dec447",
+  "manifest.webmanifest": "059f44cc3d6291768d1e9bd9a602041316058c73bec90ed5539ef605da67048b",
   "new-audio/unlock.mp3": "0bda22e149e77d813d16aa752af85ef603b7fe233953777f1cab8ffc248abde8",
   "new-audio/v33_name_facu.mp3": "84265fe36bdc35f479fb823f765616c1710fbbcce160af2da3e774a700570102",
   "new-audio/v33q_001.mp3": "ccd486312791d50b6e1e76a8bb3f7f716beee4a24301dff5e1a68564e6132c99",
@@ -188,5 +188,8 @@
   "new-audio/v33w_090.mp3": "9830e55c1ce16db4abc0277182f663af212f42ffb33f14adab5ab3adb98f437a",
   "new-audio/v33w_091.mp3": "431ccd887319eeeef5cf62933fb18079c79d91b8b37b2ec572d737c39622261b",
   "new-audio/v33w_092.mp3": "819a42654a704222f7f9e9e9e701bac1e70d2426d6e9af6817dcd15846d6a95e",
-  "new-audio/v33w_093.mp3": "b55a2d82784e5faed1b094df055579add134e7217e9ba1fa5b1a4212c97c779b"
+  "new-audio/v33w_093.mp3": "b55a2d82784e5faed1b094df055579add134e7217e9ba1fa5b1a4212c97c779b",
+  "apple-touch-icon.png": "455f8c814f4c53c06df98c9ec3445a83009bef630fb1112aaf5e746ff6edeb3f",
+  "icon-192.png": "314e4374c9131887007967aea52e6ca6aa64106a22253caca6ffaedea7f020a0",
+  "icon-512.png": "c27bb28b2c029a7b5a4cccaeb82c929bb48cbae823e13a6733f2977e20155dca"
 }
