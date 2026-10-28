@@ -1,4 +1,22 @@
-# MAMBAPALABRA — documentación histórica de estabilización B1.11
+# MAMBAPALABRA
+
+## Producción (vigente desde 2026-10-28)
+
+El juego publicado vive en la branch **`production`** de este repositorio, no en `main`.
+GitHub Pages sirve esa branch desde la raíz:
+
+- URL: https://facundocapello-blip.github.io/Mambapalabra/
+- Versión: **B1.13.1-UX1-FISH398-VOZ-UNICA-RC6** (398 definiciones + 398 respuestas con voz Fish)
+- Tag: `production-rc6`
+- Branch espejo con el build archivado: `mambapalabra-staging`, branch `release/rc6-build`
+
+`main` queda solo con documentación. Para cambiar el juego hay que trabajar sobre
+`production`. El modo **Online está fuera de servicio**: el proyecto Supabase
+`qbzrqinnhrgeqvgtifrt` ya no existe y la sección quedó oculta.
+
+---
+
+# Documentación histórica de estabilización B1.11
 
 > **Estado vigente:** el usuario confirmó B1.13.1 como versión aprobada, con pruebas y validaciones OK (15/10/2026). Este README describe solamente la base histórica B1.11; ver [PROJECT_STATUS.md](PROJECT_STATUS.md). No usar B1.11 como fuente para cambios nuevos.
 
