@@ -18,3 +18,7 @@ Actualizado: 2026-10-28
   hardcodeado en `index.html`.
 - El modo Online está deshabilitado a propósito (el Supabase al que apuntaba no existe).
 - `main` no tiene el juego. Publicar desde `main` deja el sitio roto.
+
+## Verificar
+- `powershell -NoProfile -File qa/smoke.ps1` — HTTP, build B1.13 y 10 assets al azar contra `ASSETS_SHA256.json`.
+- Con `-Full` revisa los 193 hashes: detecta un deploy parcial.
