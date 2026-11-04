@@ -1,14 +1,13 @@
 # ESTADO — Mambapalabra
 
-Actualizado: 2026-11-02
+Actualizado: 2026-11-04
 
 ## Publicado
 - `https://facundocapello-blip.github.io/Mambapalabra/` — rama `production`, 200 y consola sin errores (verificado 02/11).
 - Versión visible en el lobby: **B1.13.1-UX1 · RC6** (leída del HTML publicado, no de este archivo).
-- Publicado: `064fad4` (= `origin/production`). Local en `cc864bd` (smoke test), **sin pushear**; `production` no tiene upstream configurado.
+- Publicado: `948596e` (= `origin/production`, upstream configurado el 04/11). Encima de `064fad4` van solo docs y `qa/smoke.ps1`, sin cambios de producto.
 
 ## Abierto
-- Pushear `cc864bd` (o descartarlo): quedó fuera del remoto.
 - Probar en iPhone real: checklist en `~/work/mambapalabra-prueba-iphone.md`.
 - Letras flojas: K tiene 6 palabras y W 7 (las demás, 10–20). No es un bug; si se emparejan, las nuevas salen sin voz.
 
