@@ -31,3 +31,25 @@ Leer `README.md` primero. Reglas específicas de este repo:
 2. Lobby con la versión visible.
 3. "Jugar local" arranca y suena.
 4. Consola sin errores.
+
+---
+
+## Skills y plugins recomendados en DeepSeek Harness
+
+Mapa curado para este proyecto. Las skills se cargan con la herramienta `skill`;
+los plugins ya están instalados en el perfil de DSH.
+
+**Skills**
+
+- `impeccable` — Cualquier cambio de UI: rosco, fichas, contraste, foco.
+- `office` — Documentar en ESTADO.md o generar material de presentación.
+
+**Plugins**
+
+- **plugin-dock (Hub)** — Escribís el pedido en el composer y el Hub propone con qué IA.
+- **subagent-claude-code** — Delegar refactors o auditorías pesadas a Claude Code.
+- **better-sidebar** — Archivos, Git y terminal junto al chat.
+
+**Comandos**
+
+`/arrancar` · `/estado` · `/revisar` · `/cerrar`
