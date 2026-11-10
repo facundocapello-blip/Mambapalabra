@@ -1,11 +1,12 @@
-# ESTADO — Mambapalabra
+﻿# ESTADO — Mambapalabra
 
-Actualizado: 2026-11-04
+Actualizado: 2026-11-10
 
 ## Publicado
 - `https://facundocapello-blip.github.io/Mambapalabra/` — rama `production`, 200 y consola sin errores (verificado 02/11).
+- Refactor 10/11: `index.html` 376 KB → 255 KB (-32%). `audio-map.json` (59 KB) externo con fetch y fallback. Código muerto eliminado. Verificado en navegador headless: la partida arranca.
 - Versión visible en el lobby: **B1.13.1-UX1 · RC6** (leída del HTML publicado, no de este archivo).
-- Publicado: `948596e` (= `origin/production`, upstream configurado el 04/11). Encima de `064fad4` van solo docs y `qa/smoke.ps1`, sin cambios de producto.
+- Publicado: `275c793` (= `origin/production`, 10/11). Encima de `948596e`: merge del refactor de limpieza (`d2764e4`).
 
 ## Abierto
 - Probar en iPhone real: checklist en `~/work/mambapalabra-prueba-iphone.md`.
