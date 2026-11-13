@@ -22,6 +22,9 @@
 <link rel="manifest" href="manifest.webmanifest" />
 <meta name="description" content="Mambapalabra: el juego del rosco para dos jugadores, con definiciones y voz." />
 <meta name="mambapalabra-version" content="B1.13.1-UX1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 
 
@@ -227,6 +230,94 @@ input,select{background:#302082;color:#fff;border-color:#7268cc}input::placehold
  .game .b1-actions button:not([hidden]){min-height:46px;font-size:14px}
  .game .answer-row input,.game .answer-row button{min-height:44px}
 }
+
+/* ============================================================
+   PRIME TIME — capa de dirección visual (override, gana por orden)
+   Solo estética: colores, fuentes, relieve. Sin tocar la lógica.
+   ============================================================ */
+:root{
+  --accent:#f5c542; --accent2:#ffd56b; --good:#19c98a; --bad:#ff5d73;
+  --text:#f3eeff; --muted:#c6bfe0; --line:rgba(245,197,66,.20);
+  --panel:transparent; --panel2:rgba(255,255,255,.05); --neutral:#241845;
+}
+body{
+  background:
+    radial-gradient(920px 540px at 50% -6%, rgba(245,197,66,.20), transparent 60%),
+    linear-gradient(170deg,#190e31 0%,#241244 46%,#3a1550 100%);
+  background-attachment:fixed; color:var(--text);
+  font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+/* Marca y títulos de impacto */
+.game-brand,.lobby-logo h1,.rosco-center strong,.active-name,
+.result-flash__title,#winnerText,.start-countdown{
+  font-family:"Anton",sans-serif; font-weight:400;
+}
+.game-brand{color:#ffd56b; letter-spacing:.08em}
+.lobby-logo h1{color:#ffd56b; letter-spacing:.04em}
+.lobby h1 span{color:#c6bfe0}
+.lobby p[role="status"]{color:#c6bfe0}
+
+/* Cards y secciones: vidrio con filo dorado */
+.card{background:var(--panel2); border:1px solid var(--line)}
+.card.question-card,.card.status{background:rgba(255,255,255,.05)}
+.local-section,.online-section{background:rgba(255,255,255,.04); border-color:var(--line)}
+.setup-field label,.online-card label{color:#e7e1ff}
+
+/* Scoreline */
+.score{background:rgba(255,255,255,.05); border:1px solid rgba(245,197,66,.14)}
+.score.active-score{background:linear-gradient(180deg,rgba(245,197,66,.18),rgba(245,197,66,.04)); border-color:rgba(245,197,66,.5); box-shadow:0 6px 22px rgba(245,197,66,.12)}
+.timer{color:#ffd56b}
+.hit-good{color:#19c98a} .hit-bad{color:#ff5d73}
+
+/* Rosco: foco de luz y aros encendidos */
+.rosco{filter:drop-shadow(0 0 26px rgba(245,197,66,.22))}
+.rosco-center{background:radial-gradient(circle at 50% 34%,#2c1a52,#160c2e); box-shadow:0 0 0 2px rgba(245,197,66,.42),0 12px 34px rgba(0,0,0,.5)}
+.rosco-center strong{color:#ffd56b}
+.rosco-center span{color:#c6bfe0}
+.letter-chip{background:#241845; color:#b9a8e6; border:1.5px solid rgba(255,255,255,.12)}
+.letter-chip.correct{background:#19c98a; color:#06231a; border-color:transparent; box-shadow:0 0 10px rgba(25,201,138,.55)}
+.letter-chip.wrong{background:#ff5d73; color:#2a060e; border-color:transparent}
+.letter-chip.pending{background:#f5c542; color:#2a1e00; border-color:transparent}
+.letter-chip.current{background:#fff; color:#160c2e; border-color:transparent; transform:scale(1.14); box-shadow:0 0 16px #f5c542,0 0 4px #fff}
+.letter-chip.disabled{background:rgba(255,255,255,.06); color:rgba(255,255,255,.32); border-color:transparent}
+
+/* Orbes de tiempo */
+.time-orb,.hits-orb{background:rgba(255,255,255,.05); border:2px solid rgba(245,197,66,.45); color:#ffd56b; box-shadow:inset 0 0 0 4px rgba(255,255,255,.04)}
+.time-orb.active-turn{background:linear-gradient(180deg,rgba(245,197,66,.26),rgba(245,197,66,.06)); border-color:#f5c542; box-shadow:0 0 20px rgba(245,197,66,.4)}
+.time-orb.danger{background:#ff5d73; border-color:#ff5d73; color:#2a060e}
+.orb-name{color:#c6bfe0}
+
+/* Botones con relieve físico */
+.start,.btn-mic{background:linear-gradient(180deg,#ffd56b,#f0a93a); color:#2a1600; box-shadow:0 6px 0 #b9792a; font-weight:900}
+.start:active,.btn-mic:active{box-shadow:0 2px 0 #b9792a; transform:translateY(4px)}
+.start:disabled,.btn-mic:disabled{background:rgba(255,255,255,.1); color:#9d93c4; box-shadow:none}
+.btn-pass{background:rgba(255,255,255,.08); color:#ffe8ad; box-shadow:inset 0 0 0 1.5px rgba(245,197,66,.4)}
+.btn-pass:disabled{color:#8b84ab; box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.1)}
+#sendTextBtn{background:rgba(245,197,66,.16); color:#ffd56b; box-shadow:inset 0 0 0 1.5px rgba(245,197,66,.45)}
+.rail-repeat{background:rgba(245,197,66,.14)!important; color:#ffd56b!important}
+
+/* Campos */
+input,select{background:rgba(255,255,255,.06); color:#f3eeff; border-color:rgba(245,197,66,.22)}
+input::placeholder{color:#9d93c4}
+input:focus-visible,select:focus-visible{outline:3px solid #f5c542; outline-offset:2px}
+
+/* Chrome superior */
+.top-actions button{background:rgba(255,255,255,.08)!important; color:#f3eeff!important}
+.top-pause{background:rgba(245,197,66,.16)!important; color:#ffd56b!important}
+.options-menu button{background:#201340!important; color:#e7e1ff!important}
+
+/* Pantalla final y flashes */
+.end{background:transparent}
+#winnerText{color:#ffd56b}
+.result-box{background:rgba(255,255,255,.05)}
+.start-countdown{background:#160c2eef; color:#ffd56b}
+.result-flash__box{background:#160c2e; color:#f3eeff; border:3px solid #f5c542}
+.result-flash.good .result-flash__box{border-color:#19c98a}
+.result-flash.pass .result-flash__box{border-color:#ffd56b}
+.result-flash.timeout .result-flash__box{border-color:#ff8a5c}
+.toast{background:#160c2e; color:#ffd56b}
+.question{color:#f3eeff}
+.transcript,.active-meta,.mini,.note{color:#c6bfe0}
 </style>
 </head>
 <body>
