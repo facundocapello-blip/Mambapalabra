@@ -904,9 +904,12 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
   function renderRoscos(){
     ["Mamba","Facu"].forEach(slot=>{
       const root=$("#rosco"+slot);root.querySelectorAll(".letter-chip").forEach(n=>n.remove());
+      root.setAttribute("role","list");root.setAttribute("aria-label","Rosco de "+slot);
+      const center=root.querySelector(".rosco-center");if(center)center.setAttribute("aria-hidden","true");
       LETTERS.forEach((letter,i)=>{
         const a=(i/LETTERS.length)*Math.PI*2-Math.PI/2;
         const chip=document.createElement("div");chip.className="letter-chip";chip.dataset.player=slot;chip.dataset.index=i;chip.textContent=letter;
+        chip.setAttribute("role","listitem");chip.setAttribute("aria-label",letter);
         chip.style.left=(50+Math.cos(a)*46)+"%";chip.style.top=(50+Math.sin(a)*46)+"%";root.appendChild(chip);
       });
     });
@@ -1330,6 +1333,9 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
         if(it.state==="disabled"){chip.classList.add("disabled");chip.title="Audio nuevo pendiente";}else chip.removeAttribute("title");
         if(it.state==="correct")chip.classList.add("correct");if(it.state==="wrong")chip.classList.add("wrong");if(it.state==="pending")chip.classList.add("pending");
         if(idx===game.active&&it.index===item.index)chip.classList.add("current");
+        let st=it.state==="correct"?"correcta":it.state==="wrong"?"incorrecta":it.state==="pending"?"pendiente":it.state==="disabled"?"no disponible":"sin responder";
+        if(idx===game.active&&it.index===item.index)st="en juego";
+        chip.setAttribute("aria-label",it.letter+", "+st);
       });
     });
     els.cardMamba.classList.toggle("active",game.active===0);els.cardFacu.classList.toggle("active",game.active===1);renderTimers();
