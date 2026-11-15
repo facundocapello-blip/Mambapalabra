@@ -1,8 +1,9 @@
 # ESTADO — Mambapalabra
 
-Actualizado: 2026-11-10
+Actualizado: 2026-11-15
 
 ## Publicado
+- 15/11: +124 preguntas de YouTube (Pasapalabra programas 213, 214 y 215) con voz Fish. Banco del juego 398 → 522; Sheet Banco A-0429…T-0552.
 - `https://facundocapello-blip.github.io/Mambapalabra/` — rama `production`, HTTP 200 verificado 10/11 (index 259 KB, audio-map 60 KB).
 - Refactor 10/11: `index.html` 376 KB → 255 KB (-32%). `audio-map.json` fuera del HTML, con fetch y fallback. Código muerto (PIPER_AUDIO_MAP, RESERVE) eliminado.
 - Versión visible en el lobby: **B1.13.1-UX1 · RC6**.

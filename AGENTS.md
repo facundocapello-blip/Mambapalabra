@@ -16,7 +16,7 @@ Leer `README.md` primero. Reglas específicas de este repo:
   probarlo en un iPhone real, no solo en el navegador de escritorio.
 
 ## Datos del juego
-- Hay **398 definiciones**, ~15 por letra. Las flojas son K (6) y W (7): se repiten cada
+- Hay **522 definiciones**, ~15 por letra. Las flojas son K (6) y W (7): se repiten cada
   pocas partidas y no es un bug.
 - La rotación por letra se guarda en `localStorage` (`mamba:questionRotation:v2`). Si el
   estado no coincide con el pool, se resetea solo.

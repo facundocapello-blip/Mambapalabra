@@ -1,6 +1,6 @@
 # Mambapalabra
 
-Juego del rosco para dos jugadores, en un solo dispositivo. 398 definiciones con voz
+Juego del rosco para dos jugadores, en un solo dispositivo. 522 definiciones con voz
 generada (Fish Audio). Sin backend: todo corre en el navegador.
 
 **En vivo:** https://facundocapello-blip.github.io/Mambapalabra/
@@ -27,7 +27,7 @@ El deploy tarda entre 30 y 60 segundos. Verificar siempre en vivo:
 | Archivo | Qué es |
 |---|---|
 | `index.html` | El juego entero: HTML, CSS y JS en un solo archivo (~380 KB). |
-| `fish-bank/` | 398 clips de pregunta (`q0001.mp3`…) y 398 de respuesta (`w0001.mp3`…). |
+| `fish-bank/` | 522 clips de pregunta (`q0001.mp3`…) y 522 de respuesta (`w0001.mp3`…). |
 | `fish-audio/` | Clips fijos: intros, correcto, incorrecto, muerte súbita. |
 | `new-audio/` | Voz anterior y clips de desbloqueo de audio. |
 | `_cdn/static/` | Logo. |
