@@ -303,7 +303,7 @@ body.no-voice .answer-row{border-color:rgba(255,106,61,.5)}
   <main id="game" class="game" hidden>
     <section class="card status">
       <div>
-        <div id="activeName" class="active-name">Mamba</div>
+        <div id="activeName" class="active-name" aria-live="polite">Mamba</div>
         <div id="activeMeta" class="active-meta">Turno actual</div>
       </div>
       <div class="scoreline">
@@ -754,7 +754,6 @@ Object.assign(STATIC_AUDIO,{"A: Dicho de un sabor intenso y desagradable, como e
     // Conservamos la clave por compatibilidad, pero nunca más dice frases genéricas de cambio.
     switchTo:[name=>name?`${name}.`:""],
     pending:[
-      ()=>"Volvemos a las que quedaron pendientes.",
       ()=>"Vamos con las pendientes.",
       ()=>"Retomamos las que pasaste."
     ],
@@ -984,7 +983,7 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
     if(state===TURN_STATE.SWITCHING)game.turnToken++;
     game.turnState=state;
     if(state===TURN_STATE.READING)els.transcript.textContent="Escuchá la definición…";
-    else if(state===TURN_STATE.ANSWERING)els.transcript.textContent=game.audioFailed?"Audio no disponible. Leé la definición y respondé por texto o voz.":"Tocá RESPONDER para hablar, o escribí.";
+    else if(state===TURN_STATE.ANSWERING){warmTurnAudio();els.transcript.textContent=game.audioFailed?"Audio no disponible. Leé la definición y respondé por texto o voz.":"Tocá RESPONDER para hablar, o escribí.";}
     updateTurnControls();scheduleOnlineSync();
   }
 
@@ -1103,7 +1102,36 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
   const FISH_DEFINITION_PLAYBACK_RATE=1.22; // Absolute rate in local and online; preserves pitch.
   const AUDIO_START_LIMIT_MS=10000,AUDIO_STALL_LIMIT_MS=10000;
   // Download is separate from playback startup: a cold network must not change the voice.
-  const AUDIO_LOAD_LIMIT_MS=30000,AUDIO_CACHE_LIMIT=32;
+  const AUDIO_LOAD_LIMIT_MS=30000,AUDIO_CACHE_LIMIT=48;
+  // Cues cortos del conductor: se reproducen ágiles para que el turno no se frene.
+  const FISH_FAST_CUE=/^(?:fish-audio\/(?:09_incorrecto_corto|10_pasapalabra_corto)|fish-bank\/fixed(?:01|11|12|13|14))\.mp3$/;
+  const AUDIO_PREFETCHING=new Set();
+  function prefetchAudio(path){
+    if(!path||host.cache.has(path)||AUDIO_PREFETCHING.has(path))return;
+    AUDIO_PREFETCHING.add(path);
+    fetch(path,{credentials:"same-origin",cache:"force-cache"}).then(r=>{
+      if(!r.ok||/text\/html/i.test(r.headers.get("content-type")||""))throw new Error("prefetch");return r.blob();
+    }).then(blob=>{
+      if(!blob.size||host.cache.has(path))return;
+      host.cache.set(path,URL.createObjectURL(blob));
+      while(host.cache.size>AUDIO_CACHE_LIMIT){const oldest=host.cache.keys().next().value;URL.revokeObjectURL(host.cache.get(oldest));host.cache.delete(oldest);}
+    }).catch(()=>{}).finally(()=>AUDIO_PREFETCHING.delete(path));
+  }
+  function upcomingItemsFor(p,n){
+    const out=[];if(!p||p.done||p.timedOut)return out;
+    if(p.phase==="first")for(let i=p.cursor;i<p.items.length&&out.length<n;i++){if(p.items[i].state==="todo")out.push(p.items[i]);}
+    const queue=p.phase==="pending"?p.pendingQueue.map(i=>p.items[i]):p.items;
+    for(const it of queue){if(out.length>=n)break;if(it&&it.state==="pending"&&!out.includes(it))out.push(it);}
+    return out;
+  }
+  // Mientras el jugador piensa, se bajan los audios que pueden sonar después: así no hay baches entre clips.
+  function warmTurnAudio(){
+    if(!game||game.over||!speechOn)return;
+    const texts=["Correcto.","Incorrecto.","Pasapalabra.",...PHRASES.timeout.map(f=>f()),...PHRASES.pending.map(f=>f())];
+    upcomingItemsFor(player(),3).forEach(it=>texts.push(promptForItem(it)));
+    upcomingItemsFor(game.players[1-game.active],2).forEach(it=>texts.push(promptForItem(it)));
+    for(const t of texts)for(const path of (staticSegments(t)||[]))if(NEW_VOICE_AUDIO.has(path))prefetchAudio(path);
+  }
   async function loadStaticAudio(path,seq){
     if(seq!==host.seq)throw new DOMException("Cancelled","AbortError");
     if(host.cache.has(path)){const url=host.cache.get(path);host.cache.delete(path);host.cache.set(path,url);return url;}
@@ -1118,13 +1146,6 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
       while(host.cache.size>AUDIO_CACHE_LIMIT){const oldest=host.cache.keys().next().value;URL.revokeObjectURL(host.cache.get(oldest));host.cache.delete(oldest);}
       return url;
     }finally{clearTimeout(deadline);if(host.controller===controller)host.controller=null;}
-  }
-  function playerAnnouncement(name){
-    const key=normalize(name);
-    if(key==="facu"||key==="facundo")return "Facu.";
-    if(key==="mamba")return "Mamba.";
-    // Custom names stay visible; an existing neutral recording announces the handoff.
-    return "Ahora vamos con el otro jugador.";
   }
   function staticSegments(text){
     if(text==="__CUSTOM_PASS__")return [CUSTOM_AUDIO.pass];
@@ -1186,7 +1207,7 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
         audio.onended=()=>{if(valid())finish(SPEECH_RESULT.COMPLETED);};
         audio.onerror=fail;
         audio.onplaying=()=>{if(!valid())return;if(isLocalPaused()){suspend();return;}clearTimeout(startTimerId);if(!started){started=true;anyStarted=true;lastProgress=performance.now();lastPosition=audio.currentTime;progressTimer=setTimeout(checkProgress,1000);if(onStart)onStart();}};
-        audio.src=url;audio.volume=1;audio.playbackRate=/^fish-bank\/q\d{4}\.mp3$/.test(path)?FISH_DEFINITION_PLAYBACK_RATE:(/^fish-audio\/(?:09_incorrecto_corto|10_pasapalabra_corto)\.mp3$/.test(path)?1.12:(online.enabled?1:HOST_PLAYBACK_RATE));if("preservesPitch" in audio)audio.preservesPitch=true;
+        audio.src=url;audio.volume=1;audio.playbackRate=/^fish-bank\/q\d{4}\.mp3$/.test(path)?FISH_DEFINITION_PLAYBACK_RATE:(FISH_FAST_CUE.test(path)?1.12:(online.enabled?1:HOST_PLAYBACK_RATE));if("preservesPitch" in audio)audio.preservesPitch=true;
         if(!isLocalPaused())resume();
       });
       if(result.status!==SPEECH_RESULT.COMPLETED)return {...result,started:anyStarted||result.started};
@@ -1246,7 +1267,7 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
   async function hostSpeak(text,opts={}){
     cancelHostSpeech();const seq=host.seq;
     if(!speechOn){if(opts.onStart)opts.onStart();return {status:SPEECH_RESULT.COMPLETED,started:false};}
-    const paths=(opts.paths||staticSegments(text)||[]).filter(path=>NEW_VOICE_AUDIO.has(path)||path===STATIC_AUDIO["Facu."]);
+    const paths=(opts.paths||staticSegments(text)||[]).filter(path=>NEW_VOICE_AUDIO.has(path));
     if(!paths.length){setVoiceStatus("error","No hay grabación Fish Audio para esta frase. Podés continuar leyendo.");return {status:SPEECH_RESULT.FAILED,started:false};}
     host.speaking=true;updateMusic();setVoiceStatus("fish","Cargando audio del conductor…");
     const result=await playStaticPaths(paths,()=>{setVoiceStatus("fish","Voz del conductor grabada.");if(opts.onStart)opts.onStart();},seq);
@@ -1268,7 +1289,7 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
     if(mode==="online")onlineIntroPlayingMatch=match.matchId;
     try{
       if(match.turnState!==TURN_STATE.SWITCHING)return;
-      await hostSpeak(FISH_INTRO[mode]);
+      warmTurnAudio();await hostSpeak(FISH_INTRO[mode]);
     }finally{
       if(mode==="online"&&onlineIntroPlayingMatch===match.matchId)onlineIntroPlayingMatch=null;
     }
@@ -1312,8 +1333,8 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
     }
     if(!host.unlocked)await unlockAudio();if(!stillValid())return;
     if(lead){const result=await hostSpeak(lead);if(!stillValid()||!readingCanFinish(result)||!await presenterBeat(lead==="Incorrecto."||lead==="Pasapalabra."?0:PRESENTER_PAUSE_MS.result,stillValid))return;}
-    if(announcePlayer&&!lead){const result=await hostSpeak(playerAnnouncement(p.name));if(!stillValid()||!readingCanFinish(result)||!await presenterBeat(PRESENTER_PAUSE_MS.player,stillValid))return;}
-    if(p.pendingJustStarted)p.pendingJustStarted=false;
+    // Sin anuncio de nombres: el cambio de turno lo marcan los cues cortos.
+    if(p.pendingJustStarted){p.pendingJustStarted=false;const result=await hostSpeak(pick(PHRASES.pending)());if(!stillValid()||!readingCanFinish(result)||!await presenterBeat(PRESENTER_PAUSE_MS.player,stillValid))return;}
     const result=await hostSpeak(promptForItem(item));
     if(!stillValid()||!readingCanFinish(result))return;
     const stillCurrent=currentItem();if(!stillCurrent||stillCurrent.index!==itemIndex)return;
@@ -1453,7 +1474,6 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
     const idle=await waitForRecognitionIdle();if(!valid())return;
     if(idle){
       if(lead){const result=await hostSpeak(lead);if(!valid()||!readingCanFinish(result)||!await presenterBeat(PRESENTER_PAUSE_MS.result,valid))return;}
-      if(game.suddenRound===1&&game.active===0){const nameResult=await hostSpeak(playerAnnouncement(player().name));if(!valid()||!readingCanFinish(nameResult)||!await presenterBeat(PRESENTER_PAUSE_MS.player,valid))return;}
       const result=await hostSpeak(promptForItem(q));if(!valid()||!readingCanFinish(result))return;
     }else els.transcript.textContent="Micrófono pendiente de cierre. Respondé por texto.";
     setTurnState(TURN_STATE.ANSWERING);updateSuddenControls();
