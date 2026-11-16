@@ -3,6 +3,7 @@
 Actualizado: 2026-11-15
 
 ## Publicado
+- 16/11: pausa entre la letra y la definición acortada a ~0,25 s en 472 clips `qNNNN` (antes mediana 0,53 s, máx. 1 s). Corte por frames MP3 sin recomprimir; mismos nombres de archivo, hashes actualizados. Globo de la letra dentro del círculo, con colita hacia el mini yo.
 - 15/11: mini yo de Facu como conductor en el centro del rosco (sprite de Black Mamba, `static/faca-sprite.png`, sin halo blanco): saluda en la intro, gesticula al leer, piensa al esperar, salta si acierta, se agarra la cabeza si erra o se acaba el tiempo, mira a los costados en pasapalabra. Letra en globo (dice "CONTIENE" cuando corresponde), ficha del aro en contorno, aro de tiempo desde arriba, RESPONDER deshabilitado legible. La definición ya no se ve antes de que el conductor la lea.
 - 15/11: Justicia (J, #144) con definición nueva sin la respuesta ("Poder del Estado encargado de aplicar las leyes y resolver los conflictos."); `q0144.mp3` regenerado con la misma voz Fish.
 - 15/11: precarga de la segunda intro (`04_intro_solo`) mientras suena la primera y de las preguntas de muerte súbita (la primera mientras suena "Empate…", las siguientes mientras suena el resultado). Limpieza: sin `announcePlayer` ni `PHRASES.switchTo`.
