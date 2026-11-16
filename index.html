@@ -554,7 +554,7 @@ function setupMusic(){const button=document.querySelector('#musicBtn');button.ad
     // No unfinished async validation survives a reload. Recover the accepted question,
     // scores and cursor without resubmitting the previous answer.
     if([TURN_STATE.READING,TURN_STATE.VALIDATING,TURN_STATE.SWITCHING].includes(game.turnState)){
-      if(game.suddenDeath)await promptSudden(game.handoffLead||"");else await turnPrompt(game.handoffLead||"",true);
+      if(game.suddenDeath)await promptSudden(game.handoffLead||"");else await turnPrompt(game.handoffLead||"");
     }
   }
   async function restoreOnlineSession(){
@@ -656,7 +656,7 @@ function setupMusic(){const button=document.querySelector('#musicBtn');button.ad
         void playMatchIntro("online",game);
       }
       if(!online.restoring&&!game.over&&online.authority&&game.turnState===TURN_STATE.SWITCHING){
-        if(game.suddenDeath)promptSudden(game.handoffLead||"");else turnPrompt(game.handoffLead||"",true);
+        if(game.suddenDeath)promptSudden(game.handoffLead||"");else turnPrompt(game.handoffLead||"");
       }
     }
   }
@@ -751,8 +751,6 @@ Object.assign(STATIC_AUDIO,{"A: Dicho de un sabor intenso y desagradable, como e
       ()=>"Cuando quieras. Arrancamos."
     ],
     correct:[()=>"Correcto."],
-    // Conservamos la clave por compatibilidad, pero nunca más dice frases genéricas de cambio.
-    switchTo:[name=>name?`${name}.`:""],
     pending:[
       ()=>"Vamos con las pendientes.",
       ()=>"Retomamos las que pasaste."
@@ -1125,12 +1123,16 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
     return out;
   }
   // Mientras el jugador piensa, se bajan los audios que pueden sonar después: así no hay baches entre clips.
+  function prefetchTexts(texts){
+    if(!speechOn)return;
+    for(const t of texts)for(const path of (staticSegments(t)||[]))if(NEW_VOICE_AUDIO.has(path))prefetchAudio(path);
+  }
   function warmTurnAudio(){
     if(!game||game.over||!speechOn)return;
-    const texts=["Correcto.","Incorrecto.","Pasapalabra.",...PHRASES.timeout.map(f=>f()),...PHRASES.pending.map(f=>f())];
+    const texts=["Correcto.","Incorrecto.","Pasapalabra.","Empate. Vamos a muerte súbita.",...PHRASES.timeout.map(f=>f()),...PHRASES.pending.map(f=>f())];
     upcomingItemsFor(player(),3).forEach(it=>texts.push(promptForItem(it)));
     upcomingItemsFor(game.players[1-game.active],2).forEach(it=>texts.push(promptForItem(it)));
-    for(const t of texts)for(const path of (staticSegments(t)||[]))if(NEW_VOICE_AUDIO.has(path))prefetchAudio(path);
+    prefetchTexts(texts);
   }
   async function loadStaticAudio(path,seq){
     if(seq!==host.seq)throw new DOMException("Cancelled","AbortError");
@@ -1289,7 +1291,7 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
     if(mode==="online")onlineIntroPlayingMatch=match.matchId;
     try{
       if(match.turnState!==TURN_STATE.SWITCHING)return;
-      warmTurnAudio();await hostSpeak(FISH_INTRO[mode]);
+      warmTurnAudio();if(mode==="general")prefetchTexts([FISH_INTRO.solo]);await hostSpeak(FISH_INTRO[mode]);
     }finally{
       if(mode==="online"&&onlineIntroPlayingMatch===match.matchId)onlineIntroPlayingMatch=null;
     }
@@ -1314,7 +1316,7 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
     return valid();
   }
   function turnKey(){const q=game.suddenDeath?game.suddenQuestion:currentItem();return [game.matchId,game.turnToken,game.active,game.suddenDeath?game.suddenRound:player().phase,q?.index??q?.letter].join(":");}
-  async function turnPrompt(lead="",announcePlayer=false){
+  async function turnPrompt(lead=""){
     if(!game||game.over||game.suddenDeath)return;
     if(online.enabled&&!isMyOnlineTurn()){game.handoffLead=lead;scheduleOnlineSync();onlineSyncNow();return;}
     if(online.enabled&&game.turnState!==TURN_STATE.SWITCHING&&game.promptStartedToken===game.turnToken)return;
@@ -1445,6 +1447,7 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
     pauseTimer();stopRecognition();cancelHostSpeech();game.suddenDeath=true;game.suddenRound=1;game.suddenScores=[0,0];
     game.active=0;game.suddenQuestion=pickReserve();
     if(!game.suddenQuestion){finishGame(true);return;}
+    prefetchTexts([promptForItem(game.suddenQuestion)]);
     setTurnState(TURN_STATE.SWITCHING);renderSudden();promptSudden("Empate. Vamos a muerte súbita.");
   }
   function updateSuddenControls(){
@@ -1484,12 +1487,14 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
     const instance=game,q=game.suddenQuestion,owner=game.active;
     setTurnState(TURN_STATE.VALIDATING);stopRecognition();const ok=isCorrect(q,answer);
     tone(ok?"good":"bad");toast(ok?"Correcto":"Incorrecto. Era "+q.answer);
+    // La próxima pregunta se elige ya, así su audio baja mientras suena el resultado.
+    const next=pickReserve();if(next)prefetchTexts([promptForItem(next)]);
     const result=await hostSpeak(ok?"Correcto.":"Incorrecto.");
     if(game!==instance||game.over||!game.suddenDeath||!readingCanFinish(result))return;
     if(ok)game.suddenScores[owner]++;
     if(owner===1&&game.suddenScores[0]!==game.suddenScores[1]){finishGame();return;}
     if(owner===1)game.suddenRound++;
-    game.active=1-owner;game.suddenQuestion=pickReserve();
+    game.active=1-owner;game.suddenQuestion=next;
     if(!game.suddenQuestion){finishGame(true);return;}
     setTurnState(TURN_STATE.SWITCHING);renderSudden();promptSudden();
   }

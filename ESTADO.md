@@ -3,6 +3,7 @@
 Actualizado: 2026-11-15
 
 ## Publicado
+- 15/11: precarga de la segunda intro (`04_intro_solo`) mientras suena la primera y de las preguntas de muerte súbita (la primera mientras suena "Empate…", las siguientes mientras suena el resultado). Limpieza: sin `announcePlayer` ni `PHRASES.switchTo`.
 - 15/11: conductor sin anuncio de nombres (el turno se anuncia por `aria-live` en `#activeName`); aviso "Vamos con las pendientes" al empezar la segunda vuelta; cues cortos (correcto, tiempo, pendientes) a 1,12×; precarga de los próximos audios mientras el jugador responde (bache cue→definición de 113–473 ms a 6–20 ms en prueba local). Auditoría en `reviews/audit-plan-full.md` (sin commitear).
 - 15/11: +124 preguntas de YouTube (Pasapalabra programas 213, 214 y 215) con voz Fish. Banco del juego 398 → 522; Sheet Banco A-0429…T-0552.
 - `https://facundocapello-blip.github.io/Mambapalabra/` — rama `production`, HTTP 200 verificado 10/11 (index 259 KB, audio-map 60 KB).
