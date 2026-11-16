@@ -1160,11 +1160,13 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
   const AUDIO_LOAD_LIMIT_MS=30000,AUDIO_CACHE_LIMIT=48;
   // Cues cortos del conductor: se reproducen ágiles para que el turno no se frene.
   const FISH_FAST_CUE=/^(?:fish-audio\/(?:09_incorrecto_corto|10_pasapalabra_corto)|fish-bank\/fixed(?:01|11|12|13|14))\.mp3$/;
+  // Subir AUDIO_REV cuando cambia el contenido de un mp3 con el mismo nombre: force-cache no revalida.
+  const AUDIO_REV="20261116";
   const AUDIO_PREFETCHING=new Set();
   function prefetchAudio(path){
     if(!path||host.cache.has(path)||AUDIO_PREFETCHING.has(path))return;
     AUDIO_PREFETCHING.add(path);
-    fetch(path,{credentials:"same-origin",cache:"force-cache"}).then(r=>{
+    fetch(path+"?r="+AUDIO_REV,{credentials:"same-origin",cache:"force-cache"}).then(r=>{
       if(!r.ok||/text\/html/i.test(r.headers.get("content-type")||""))throw new Error("prefetch");return r.blob();
     }).then(blob=>{
       if(!blob.size||host.cache.has(path))return;
@@ -1197,7 +1199,7 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
     const controller=new AbortController();host.controller=controller;
     const deadline=setTimeout(()=>controller.abort(),AUDIO_LOAD_LIMIT_MS);
     try{
-      const response=await fetch(path,{signal:controller.signal,credentials:"same-origin",cache:"force-cache"});
+      const response=await fetch(path+"?r="+AUDIO_REV,{signal:controller.signal,credentials:"same-origin",cache:"force-cache"});
       if(!response.ok||/text\/html/i.test(response.headers.get("content-type")||""))throw new Error("audio-load");
       const blob=await response.blob();if(!blob.size)throw new Error("audio-empty");
       if(seq!==host.seq)throw new DOMException("Cancelled","AbortError");
