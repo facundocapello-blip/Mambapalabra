@@ -3,6 +3,7 @@
 Actualizado: 2026-11-15
 
 ## Publicado
+- 15/11: mini yo de Facu como conductor en el centro del rosco (sprite de Black Mamba, `static/faca-sprite.png`, sin halo blanco): saluda en la intro, gesticula al leer, piensa al esperar, salta si acierta, se agarra la cabeza si erra o se acaba el tiempo, mira a los costados en pasapalabra. Letra en globo (dice "CONTIENE" cuando corresponde), ficha del aro en contorno, aro de tiempo desde arriba, RESPONDER deshabilitado legible. La definición ya no se ve antes de que el conductor la lea.
 - 15/11: Justicia (J, #144) con definición nueva sin la respuesta ("Poder del Estado encargado de aplicar las leyes y resolver los conflictos."); `q0144.mp3` regenerado con la misma voz Fish.
 - 15/11: precarga de la segunda intro (`04_intro_solo`) mientras suena la primera y de las preguntas de muerte súbita (la primera mientras suena "Empate…", las siguientes mientras suena el resultado). Limpieza: sin `announcePlayer` ni `PHRASES.switchTo`.
 - 15/11: conductor sin anuncio de nombres (el turno se anuncia por `aria-live` en `#activeName`); aviso "Vamos con las pendientes" al empezar la segunda vuelta; cues cortos (correcto, tiempo, pendientes) a 1,12×; precarga de los próximos audios mientras el jugador responde (bache cue→definición de 113–473 ms a 6–20 ms en prueba local). Auditoría en `reviews/audit-plan-full.md` (sin commitear).

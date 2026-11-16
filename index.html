@@ -141,7 +141,7 @@ input,select{font:inherit;min-width:0}
 .player-head{display:none}
 .rosco{position:relative;aspect-ratio:1;width:min(var(--ring-size,270px),100%);margin:0 auto}
 .rosco::before{content:"";position:absolute;inset:-9px;border-radius:50%;
-  background:conic-gradient(from -90deg,var(--ringc,var(--coral)) calc(var(--time,1)*100%),rgba(255,255,255,.07) 0);
+  background:conic-gradient(from 0deg,var(--ringc,var(--coral)) calc(var(--time,1)*100%),rgba(255,255,255,.07) 0);
   -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 5px));
           mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 5px));
   filter:drop-shadow(0 0 9px rgba(255,106,61,.4));transition:--time .2s linear}
@@ -157,12 +157,34 @@ input,select{font:inherit;min-width:0}
 .letter-chip.pending{background:var(--amber);color:#3a2900}
 .letter-chip.current{background:var(--coral);color:#2a0e03;transform:translate(-50%,-50%) scale(1.26);box-shadow:0 0 16px rgba(255,106,61,.7),0 0 0 3px rgba(255,106,61,.2);z-index:2}
 .letter-chip.disabled{background:rgba(255,255,255,.05);color:rgba(255,255,255,.28)}
-.rosco-center{position:absolute;inset:27%;border-radius:50%;background:radial-gradient(circle at 50% 36%,#15293700,#0a1822);
+.rosco-center{position:absolute;inset:23%;border-radius:50%;background:radial-gradient(circle at 50% 36%,#15293700,#0a1822);
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 10px 30px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;text-align:center}
 .rosco-center strong{display:block;font-family:var(--disp);font-weight:800;font-size:var(--center-letter-size,58px);line-height:.9;color:var(--bone)}
 .rosco-center span{display:block;font-size:var(--center-name-size,10px);letter-spacing:.2em;color:var(--mut);margin-top:4px;overflow-wrap:anywhere}
+/* Conductor: el mini yo de Facu en el centro del rosco; la letra pasa a un globo arriba a la derecha. */
+.rosco-center.has-host{align-items:flex-end}
+.host-sprite{position:absolute;left:50%;bottom:4%;height:84%;aspect-ratio:92/100;transform:translateX(-50%);
+  background:url("static/faca-sprite.png") 0 0/800% 1100% no-repeat;pointer-events:none}
+.rosco-center.has-host .center-label{position:absolute;top:-4%;right:-6%;width:34%;aspect-ratio:1;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;background:var(--coral);color:#2a0e03;
+  box-shadow:0 0 14px rgba(255,106,61,.55),0 0 0 3px rgba(255,106,61,.2);z-index:2}
+.rosco-center.has-host .center-label strong{font-size:calc(var(--center-letter-size,58px)*.52);color:#2a0e03}
+.rosco-center.has-host .center-label span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.rosco-center.has-host .center-label{flex-direction:column}
+.rosco-center.has-host .center-label[data-rule="CONTIENE"]::before{content:"CONTIENE";display:block;font-family:var(--disp);font-weight:800;
+  font-size:calc(var(--center-letter-size,58px)*.15);letter-spacing:.06em;line-height:1;margin-bottom:1px}
+.rosco-center.has-host .center-label[data-rule="CONTIENE"] strong{font-size:calc(var(--center-letter-size,58px)*.42)}
+/* Sombra de piso para apoyar al mini yo */
+.rosco-center.has-host::after{content:"";position:absolute;left:50%;bottom:3%;width:36%;height:6%;transform:translateX(-50%);
+  border-radius:50%;background:radial-gradient(ellipse at center,rgba(0,0,0,.55),transparent 70%);pointer-events:none}
+.host-sprite{z-index:1}
+/* Una sola A protagonista: la ficha actual del aro queda en contorno */
+.letter-chip.current{background:#172c3a;color:var(--coral);box-shadow:inset 0 0 0 2px var(--coral),0 0 10px rgba(255,106,61,.45)}
+/* RESPONDER deshabilitado: que se lea como "esperá", no como botón roto */
+.btn-mic:disabled{opacity:1!important;background:var(--surf)!important;color:var(--mut)!important;box-shadow:inset 0 0 0 1.5px var(--line)!important}
 
 /* definición + estado + dock */
+.question.clue-wait{visibility:hidden}
 .question-card{display:flex;flex-direction:column;gap:8px;padding:2px 0 0}
 .question-row{order:1;display:flex;justify-content:center}
 .letter{display:none}
@@ -324,14 +346,14 @@ body.no-voice .answer-row{border-color:rgba(255,106,61,.5)}
       <article id="cardMamba" class="card player-card active">
         <div class="player-head"><h2 id="boardName1">Mamba</h2><div id="statsMamba" class="mini">0 bien · 0 mal · 0 pendientes</div></div>
         <div id="roscoMamba" class="rosco">
-          <div class="rosco-center"><div><strong id="centerMamba">A</strong><span id="centerName1">MAMBA</span></div></div>
+          <div class="rosco-center has-host"><div class="host-sprite" aria-hidden="true"></div><div class="center-label"><strong id="centerMamba">A</strong><span id="centerName1">MAMBA</span></div></div>
         </div>
       </article>
 
       <article id="cardFacu" class="card player-card">
         <div class="player-head"><h2 id="boardName2">Facu</h2><div id="statsFacu" class="mini">0 bien · 0 mal · 0 pendientes</div></div>
         <div id="roscoFacu" class="rosco">
-          <div class="rosco-center"><div><strong id="centerFacu">A</strong><span id="centerName2">FACU</span></div></div>
+          <div class="rosco-center has-host"><div class="host-sprite" aria-hidden="true"></div><div class="center-label"><strong id="centerFacu">A</strong><span id="centerName2">FACU</span></div></div>
         </div>
       </article>
 
@@ -975,13 +997,45 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
     if(els.railPass)els.railPass.disabled=els.pass.disabled;
     if(els.railRepeat){els.railRepeat.disabled=els.repeat.disabled;els.railRepeat.querySelector("span").textContent=online.syncError?"REINTENTAR":"REPETIR";}
   }
+  // Mini yo conductor: sprite de 8x11 cuadros (mismo que Black Mamba). [fila, cuadros, ms por cuadro]
+  const HOST_ANIM={idle:[0,6,380],wave:[3,4,225],jump:[4,5,150],fail:[5,8,200],explain:[6,6,210],think:[8,6,260],look:[9,8,170]};
+  const HOST_HOLD={wave:1800,jump:1300,fail:1700,look:1400};
+  const host2={mode:"idle",frame:0,last:0,holdUntil:0,pending:null,raf:0,
+    reduce:!!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)};
+  function drawHost(){
+    const [row]=HOST_ANIM[host2.mode],pos=(host2.frame*100/7)+"% "+(row*10)+"%";
+    document.querySelectorAll(".host-sprite").forEach(el=>{el.style.backgroundPosition=pos;});
+  }
+  function hostTick(now){
+    host2.raf=requestAnimationFrame(hostTick);
+    if(host2.pending&&performance.now()>=host2.holdUntil){const m=host2.pending;host2.pending=null;setHost(m);return;}
+    if(host2.reduce)return;
+    const [,frames,ms]=HOST_ANIM[host2.mode];
+    if(now-host2.last<ms)return;host2.last=now;
+    const holding=performance.now()<host2.holdUntil;
+    // Las animaciones de reacción se juegan una vez y quedan en el último cuadro; las demás hacen loop.
+    host2.frame=HOST_HOLD[host2.mode]&&holding?Math.min(frames-1,host2.frame+1):(host2.frame+1)%frames;
+    drawHost();
+  }
+  function setHost(mode){
+    if(!HOST_ANIM[mode])mode="idle";
+    const hold=HOST_HOLD[mode]||0;
+    if(!hold&&performance.now()<host2.holdUntil){host2.pending=mode;return;}
+    host2.mode=mode;host2.frame=0;host2.last=performance.now();host2.pending=null;
+    if(hold)host2.holdUntil=performance.now()+hold;
+    drawHost();if(!host2.raf)host2.raf=requestAnimationFrame(hostTick);
+  }
+  setHost("idle");
   function setTurnState(state){
     if(!game)return;
     if(state!==TURN_STATE.ANSWERING)pauseTimer();
     if(state===TURN_STATE.SWITCHING)game.turnToken++;
     game.turnState=state;
-    if(state===TURN_STATE.READING)els.transcript.textContent="Escuchá la definición…";
-    else if(state===TURN_STATE.ANSWERING){warmTurnAudio();els.transcript.textContent=game.audioFailed?"Audio no disponible. Leé la definición y respondé por texto o voz.":"Tocá RESPONDER para hablar, o escribí.";}
+    // La definición se muestra recién cuando el conductor empieza a leerla (no durante la intro ni el cambio de turno).
+    if(state===TURN_STATE.SWITCHING||state===TURN_STATE.READING)els.question.classList.add("clue-wait");
+    else els.question.classList.remove("clue-wait");
+    if(state===TURN_STATE.READING){els.transcript.textContent="Escuchá la definición…";setHost("explain");}
+    else if(state===TURN_STATE.ANSWERING){setHost("think");warmTurnAudio();els.transcript.textContent=game.audioFailed?"Audio no disponible. Leé la definición y respondé por texto o voz.":"Tocá RESPONDER para hablar, o escribí.";}
     updateTurnControls();scheduleOnlineSync();
   }
 
@@ -1291,7 +1345,7 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
     if(mode==="online")onlineIntroPlayingMatch=match.matchId;
     try{
       if(match.turnState!==TURN_STATE.SWITCHING)return;
-      warmTurnAudio();if(mode==="general")prefetchTexts([FISH_INTRO.solo]);await hostSpeak(FISH_INTRO[mode]);
+      setHost("wave");warmTurnAudio();if(mode==="general")prefetchTexts([FISH_INTRO.solo]);await hostSpeak(FISH_INTRO[mode]);
     }finally{
       if(mode==="online"&&onlineIntroPlayingMatch===match.matchId)onlineIntroPlayingMatch=null;
     }
@@ -1337,6 +1391,7 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
     if(lead){const result=await hostSpeak(lead);if(!stillValid()||!readingCanFinish(result)||!await presenterBeat(lead==="Incorrecto."||lead==="Pasapalabra."?0:PRESENTER_PAUSE_MS.result,stillValid))return;}
     // Sin anuncio de nombres: el cambio de turno lo marcan los cues cortos.
     if(p.pendingJustStarted){p.pendingJustStarted=false;const result=await hostSpeak(pick(PHRASES.pending)());if(!stillValid()||!readingCanFinish(result)||!await presenterBeat(PRESENTER_PAUSE_MS.player,stillValid))return;}
+    els.question.classList.remove("clue-wait");
     const result=await hostSpeak(promptForItem(item));
     if(!stillValid()||!readingCanFinish(result))return;
     const stillCurrent=currentItem();if(!stillCurrent||stillCurrent.index!==itemIndex)return;
@@ -1345,11 +1400,16 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
   function advanceWithinPlayer(){const p=player();if(p.phase==="first")p.cursor++;else if(p.phase==="pending"&&p.pendingQueue.length)p.pendingQueue.shift();}
 
 
+  // Globo del centro: la letra, y "CONTIENE" arriba cuando la regla lo pide (antes solo lo decía la voz).
+  function setCenterLetter(el,item){
+    el.textContent=item?item.letter:"✓";
+    const label=el.parentElement;if(label)label.dataset.rule=item&&item.rule==="CONTIENE"?"CONTIENE":"EMPIEZA";
+  }
   function syncUI(){
     if(!game||game.over||game.suddenDeath)return;const p=player(),item=currentItem();if(!item)return;
     els.game.classList.remove("sudden");
-    els.activeName.textContent=p.name;if(els.railPlayer)els.railPlayer.textContent=p.name;els.currentLetter.textContent=item.letter;els.question.textContent=item.clue;els.transcript.textContent="Esperando respuesta…";els.text.value="";
-    const cm=currentItemFor(game.players[0]),cf=currentItemFor(game.players[1]);els.centerMamba.textContent=cm?cm.letter:"✓";els.centerFacu.textContent=cf?cf.letter:"✓";
+    els.activeName.textContent=p.name;if(els.railPlayer)els.railPlayer.textContent=p.name;els.currentLetter.textContent=item.letter;els.question.textContent=item.clue;if(game.turnState===TURN_STATE.SWITCHING)els.question.classList.add("clue-wait");els.transcript.textContent="Esperando respuesta…";els.text.value="";
+    const cm=currentItemFor(game.players[0]),cf=currentItemFor(game.players[1]);setCenterLetter(els.centerMamba,cm);setCenterLetter(els.centerFacu,cf);
     els.scoreMamba.textContent=game.players[0].correct;els.scoreFacu.textContent=game.players[1].correct;
     $("#wrongMamba").textContent=game.players[0].wrong;$("#wrongFacu").textContent=game.players[1].wrong;
     ["Mamba","Facu"].forEach((slot,idx)=>{
@@ -1417,7 +1477,7 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
     setTurnState(TURN_STATE.VALIDATING);stopRecognition();const p=player(),item=currentItem();if(!item)return;item.state="pending";
     if(p.phase==="first")p.cursor++;else if(p.pendingQueue.length){const idx=p.pendingQueue.shift();p.pendingQueue.push(idx);}
     tone("pass");showFeedback("pass","PASAPALABRA","",300);setTurnState(TURN_STATE.SWITCHING);const other=1-game.active;
-    if(currentItemFor(game.players[other])){game.active=other;syncUI();turnPrompt("Pasapalabra.",true);}
+    if(currentItemFor(game.players[other])){game.active=other;syncUI();turnPrompt("Pasapalabra.");}
     else if(currentItemFor(p)){syncUI();turnPrompt("Pasapalabra.");}else finishOrSudden();
   }
   function handleTimeUp(owner,runId){
@@ -1430,7 +1490,7 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
   function finishOrSudden(){
     pauseTimer();
     if(currentItemFor(game.players[0])||currentItemFor(game.players[1])){
-      if(!currentItem()){game.active=1-game.active;syncUI();turnPrompt("Pasapalabra.",true);}
+      if(!currentItem()){game.active=1-game.active;syncUI();turnPrompt("Pasapalabra.");}
       return;
     }
     const a=game.players[0].correct,b=game.players[1].correct;if(a===b)startSuddenDeath();else finishGame();
@@ -1461,7 +1521,7 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
     const p=player(),q=game.suddenQuestion;if(!q)return;
     els.game.classList.add("sudden");
     els.activeName.textContent=p.name+" · Muerte súbita";els.activeMeta.textContent="Ronda "+game.suddenRound;
-    els.currentLetter.textContent=q.letter;els.question.textContent=q.clue;els.text.value="";els.transcript.textContent="Respondé por texto o dictado del teclado.";
+    els.currentLetter.textContent=q.letter;setCenterLetter(game.active===0?els.centerMamba:els.centerFacu,q);els.question.textContent=q.clue;els.text.value="";els.transcript.textContent="Respondé por texto o dictado del teclado.";
     els.cardMamba.classList.toggle("active",game.active===0);els.cardFacu.classList.toggle("active",game.active===1);
     [els.timer1,els.timer2].forEach((el,i)=>el.closest(".score").classList.toggle("active-score",game.active===i));
     renderTimers();updateSuddenControls();updatePauseControl();requestAnimationFrame(fitMobileRing);
@@ -1477,7 +1537,7 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
     const idle=await waitForRecognitionIdle();if(!valid())return;
     if(idle){
       if(lead){const result=await hostSpeak(lead);if(!valid()||!readingCanFinish(result)||!await presenterBeat(PRESENTER_PAUSE_MS.result,valid))return;}
-      const result=await hostSpeak(promptForItem(q));if(!valid()||!readingCanFinish(result))return;
+      els.question.classList.remove("clue-wait");const result=await hostSpeak(promptForItem(q));if(!valid()||!readingCanFinish(result))return;
     }else els.transcript.textContent="Micrófono pendiente de cierre. Respondé por texto.";
     setTurnState(TURN_STATE.ANSWERING);updateSuddenControls();
   }
@@ -1486,7 +1546,7 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
     const answer=String(raw||"").trim();if(!answer)return;
     const instance=game,q=game.suddenQuestion,owner=game.active;
     setTurnState(TURN_STATE.VALIDATING);stopRecognition();const ok=isCorrect(q,answer);
-    tone(ok?"good":"bad");toast(ok?"Correcto":"Incorrecto. Era "+q.answer);
+    tone(ok?"good":"bad");setHost(ok?"jump":"fail");toast(ok?"Correcto":"Incorrecto. Era "+q.answer);
     // La próxima pregunta se elige ya, así su audio baja mientras suena el resultado.
     const next=pickReserve();if(next)prefetchTexts([promptForItem(next)]);
     const result=await hostSpeak(ok?"Correcto.":"Incorrecto.");
@@ -1533,6 +1593,7 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
     if(!els.resultFlash)return;feedbackSeq++;clearTimeout(showFeedback.t);els.resultFlash.classList.remove("show");
   }
   function showFeedback(type,title,answer="",duration=650){
+    setHost({good:"jump",bad:"fail",pass:"look",timeout:"fail"}[type]||"idle");
     if(!els.resultFlash)return;clearTimeout(showFeedback.t);const seq=++feedbackSeq;
     els.resultFlash.className="result-flash "+type;els.resultFlashTitle.textContent=title;els.resultFlashAnswer.textContent=answer;
     requestAnimationFrame(()=>{if(seq===feedbackSeq)els.resultFlash.classList.add("show");});
@@ -1755,6 +1816,7 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
     const valid=()=>game===instance&&!game.over&&!game.suddenDeath&&token===game.turnToken&&owner===game.active;
     const idle=await waitForRecognitionIdle();if(!valid())return;
     let result=null;
+    els.question.classList.remove("clue-wait");
     if(idle){result=await hostSpeak(promptForItem(item));if(!valid()||!readingCanFinish(result))return;}
     else els.transcript.textContent="Micrófono pendiente de cierre. Respondé por texto.";
     const stillCurrent=currentItem();if(!stillCurrent||stillCurrent.index!==itemIndex)return;
