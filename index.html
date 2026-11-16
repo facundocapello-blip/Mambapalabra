@@ -422,7 +422,7 @@ function updateMusic(){
 // Called after the UI and audio services have initialized.
 function setupMusic(){const button=document.querySelector('#musicBtn');button.addEventListener('click',async()=>{music.enabled=!music.enabled;button.textContent=music.enabled?'♫ ON':'♫ OFF';button.setAttribute('aria-pressed',music.enabled);const ctx=getFxCtx();if(ctx?.state==='suspended')await ctx.resume();updateMusic();});document.addEventListener('visibilitychange',updateMusic);new MutationObserver(updateMusic).observe(els.lobby,{attributes:true,attributeFilter:['hidden']});new MutationObserver(updateMusic).observe(els.end,{attributes:true,attributeFilter:['hidden']});}
 
-  const LETTERS=["A","B","C","D","E","F","G","H","I","J","K","L","M","N","Ñ","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
+  const LETTERS=["A","B","C","D","E","F","G","H","I","J","L","M","N","Ñ","O","P","Q","R","S","T","U","V","X","Y","Z"];
   const BANK={
     Mamba: [
       ["A","Astrolabio","Instrumento antiguo utilizado para medir la altura de los astros sobre el horizonte."],

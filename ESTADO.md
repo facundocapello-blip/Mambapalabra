@@ -16,7 +16,7 @@ Actualizado: 2026-11-15
 
 ## Abierto
 - Probar en iPhone real: checklist en `~/work/mambapalabra-prueba-iphone.md`.
-- Letras flojas: K tiene 6 palabras y W 7 (las demás, 10–20). Si se emparejan, las nuevas salen sin voz.
+- Rosco de 25 letras: K y W sacadas del juego el 16/11/2026 (quedan en el banco, no se sortean). Restaurar en `LETTERS` de `index.html` si se quieren de vuelta.
 - PWA: falta service worker para que sea instalable y funcione offline. El manifest ya está.
 - Accesibilidad: los `letter-chip` del rosco son `<div>` sin `role` ni `aria-label`; un lector de pantalla no sigue el progreso.
 

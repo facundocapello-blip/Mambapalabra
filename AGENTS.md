@@ -16,8 +16,9 @@ Leer `README.md` primero. Reglas específicas de este repo:
   probarlo en un iPhone real, no solo en el navegador de escritorio.
 
 ## Datos del juego
-- Hay **522 definiciones**, ~15 por letra. Las flojas son K (6) y W (7): se repiten cada
-  pocas partidas y no es un bug.
+- Hay **522 definiciones**, ~15 por letra. El rosco tiene **25 letras: K y W están fuera**
+  (decisión de Facu, 16/11/2026). Sus definiciones siguen en el banco pero no se sortean.
+  Para volver a incluirlas, restaurar "K" y "W" en `LETTERS` de `index.html`.
 - La rotación por letra se guarda en `localStorage` (`mamba:questionRotation:v2`). Si el
   estado no coincide con el pool, se resetea solo.
 
