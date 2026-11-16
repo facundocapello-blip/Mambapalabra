@@ -163,17 +163,17 @@ input,select{font:inherit;min-width:0}
 .rosco-center span{display:block;font-size:var(--center-name-size,10px);letter-spacing:.2em;color:var(--mut);margin-top:4px;overflow-wrap:anywhere}
 /* Conductor: el mini yo de Facu en el centro del rosco; la letra pasa a un globo arriba a la derecha. */
 .rosco-center.has-host{align-items:flex-end}
-.host-sprite{position:absolute;left:50%;bottom:4%;height:84%;aspect-ratio:92/100;transform:translateX(-50%);
+.host-sprite{position:absolute;left:50%;bottom:5%;height:56%;aspect-ratio:92/100;transform:translateX(-50%);
   background:url("static/faca-sprite.png") 0 0/800% 1100% no-repeat;pointer-events:none}
-.rosco-center.has-host .center-label{position:absolute;top:7%;right:5%;width:31%;aspect-ratio:1;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;background:var(--coral);color:#2a0e03;
-  box-shadow:0 0 14px rgba(255,106,61,.55),0 0 0 3px rgba(255,106,61,.2);z-index:2}
-.rosco-center.has-host .center-label strong{font-size:calc(var(--center-letter-size,58px)*.52);color:#2a0e03}
+.rosco-center.has-host .center-label{position:absolute;top:6%;right:4%;width:37%;aspect-ratio:1.1;border-radius:44% 44% 44% 44%/50% 50% 50% 50%;
+  display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#fffaf2,#ffe3cf);color:#2a0e03;
+  filter:drop-shadow(0 5px 9px rgba(0,0,0,.45));z-index:2}
+.rosco-center.has-host .center-label strong{font-size:calc(var(--center-letter-size,58px)*.52);color:#2a0e03;text-shadow:0 1px 0 rgba(255,255,255,.7)}
 .rosco-center.has-host .center-label span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .rosco-center.has-host .center-label{flex-direction:column}
 /* Globo de diálogo: la colita apunta al mini yo, así la letra queda "dicha" por él y no flotando */
-.rosco-center.has-host .center-label::after{content:"";position:absolute;left:4%;bottom:2%;width:26%;height:26%;
-  background:var(--coral);clip-path:polygon(0 100%,100% 0,100% 70%);transform:translate(-55%,35%) rotate(8deg)}
+.rosco-center.has-host .center-label::after{content:"";position:absolute;left:16%;bottom:-15%;width:24%;height:26%;
+  background:#ffe3cf;clip-path:polygon(0 0,100% 0,22% 100%)}
 .rosco-center.has-host .center-label[data-rule="CONTIENE"]::before{content:"CONTIENE";display:block;font-family:var(--disp);font-weight:800;
   font-size:calc(var(--center-letter-size,58px)*.15);letter-spacing:.06em;line-height:1;margin-bottom:1px}
 .rosco-center.has-host .center-label[data-rule="CONTIENE"] strong{font-size:calc(var(--center-letter-size,58px)*.42)}
@@ -1019,6 +1019,8 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
     host2.raf=requestAnimationFrame(hostTick);
     if(host2.pending&&performance.now()>=host2.holdUntil){const m=host2.pending;host2.pending=null;setHost(m);return;}
     if(host2.reduce)return;
+    // Quieto salvo que un participante haga algo: al terminar la reacción vuelve al cuadro de reposo y frena el loop.
+    if(host2.mode==="idle"||(HOST_HOLD[host2.mode]&&performance.now()>=host2.holdUntil+400)){setHost("idle");return;}
     const [,frames,ms]=HOST_ANIM[host2.mode];
     if(now-host2.last<ms)return;host2.last=now;
     const holding=performance.now()<host2.holdUntil;
@@ -1032,7 +1034,10 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
     if(!hold&&performance.now()<host2.holdUntil){host2.pending=mode;return;}
     host2.mode=mode;host2.frame=0;host2.last=performance.now();host2.pending=null;
     if(hold)host2.holdUntil=performance.now()+hold;
-    drawHost();if(!host2.raf)host2.raf=requestAnimationFrame(hostTick);
+    if(host2.reduce&&hold)setTimeout(()=>setHost("idle"),hold+450);
+    drawHost();
+    if(mode==="idle"||host2.reduce){if(host2.raf){cancelAnimationFrame(host2.raf);host2.raf=0;}}
+    else if(!host2.raf)host2.raf=requestAnimationFrame(hostTick);
   }
   setHost("idle");
   function setTurnState(state){
@@ -1043,8 +1048,8 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
     // La definición se muestra recién cuando el conductor empieza a leerla (no durante la intro ni el cambio de turno).
     if(state===TURN_STATE.SWITCHING||state===TURN_STATE.READING)els.question.classList.add("clue-wait");
     else els.question.classList.remove("clue-wait");
-    if(state===TURN_STATE.READING){els.transcript.textContent="Escuchá la definición…";setHost("explain");}
-    else if(state===TURN_STATE.ANSWERING){setHost("think");warmTurnAudio();els.transcript.textContent=game.audioFailed?"Audio no disponible. Leé la definición y respondé por texto o voz.":"Tocá RESPONDER para hablar, o escribí.";}
+    if(state===TURN_STATE.READING){els.transcript.textContent="Escuchá la definición…";}
+    else if(state===TURN_STATE.ANSWERING){warmTurnAudio();els.transcript.textContent=game.audioFailed?"Audio no disponible. Leé la definición y respondé por texto o voz.":"Tocá RESPONDER para hablar, o escribí.";}
     updateTurnControls();scheduleOnlineSync();
   }
 
