@@ -98,7 +98,8 @@ input,select{font:inherit;min-width:0}
 .start:disabled{background:var(--surf2);color:var(--mut);box-shadow:none}
 .start.av-ready{box-shadow:0 6px 0 var(--coral-s),0 0 0 3px rgba(55,217,138,.35)}
 .start-av-hint,.hands-free{display:block;margin:10px 0 0;color:var(--mut);font-size:13px}
-.online-section{opacity:.65}
+.online-section{opacity:1}
+.online-actions button{flex:1;box-shadow:inset 0 0 0 1.5px var(--coral);color:var(--bone)}
 .online-actions{display:flex;gap:8px;margin-bottom:10px}
 .online-actions button,#resumeOnlineBtn,#joinOnlineBtn,.invite-actions button{min-height:42px;padding:0 14px;border-radius:12px;background:var(--surf2);color:var(--bone);font-weight:700;font-size:13px}
 .online-card{margin-top:10px;display:grid;gap:8px}
@@ -164,7 +165,7 @@ input,select{font:inherit;min-width:0}
 /* Conductor: el mini yo de Facu en el centro del rosco; la letra pasa a un globo arriba a la derecha. */
 .rosco-center.has-host{align-items:flex-end}
 .host-sprite{position:absolute;left:50%;bottom:5%;height:56%;aspect-ratio:92/100;transform:translateX(-50%);
-  background:url("static/faca-sprite.png") 0 0/800% 1100% no-repeat;pointer-events:none}
+  background:url("static/faca-sprite.webp") 0 0/800% 1100% no-repeat;pointer-events:none}
 .rosco-center.has-host .center-label{position:absolute;top:6%;right:4%;width:37%;aspect-ratio:1.1;border-radius:44% 44% 44% 44%/50% 50% 50% 50%;
   display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#fffaf2,#ffe3cf);color:#2a0e03;
   filter:drop-shadow(0 5px 9px rgba(0,0,0,.45));z-index:2}
@@ -228,15 +229,32 @@ body.no-voice .answer-row{border-color:rgba(255,106,61,.5)}
 .result-box strong{font-family:var(--disp);font-weight:800;font-size:40px;line-height:1}
 .result-box .muted{color:var(--mut);font-size:12px}
 .end .start{margin-top:10px}
+.stat-line{margin-top:6px;font-size:12.5px;font-weight:700;color:var(--mut);letter-spacing:.02em}
+.stat-line b{font-weight:800}.stat-line .ok{color:var(--lime)}.stat-line .ko{color:var(--red)}.stat-line .ps{color:var(--amber)}
+.result-box.winner{box-shadow:inset 0 0 0 2px var(--lime)}
+.history-line{margin:2px 0 0;font-size:13px;color:var(--bone);background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:8px 14px}
+.history-line span{color:var(--mut);font-weight:700;letter-spacing:.12em;font-size:11px;margin-right:6px}
+.review{width:100%;text-align:left;background:var(--surf);border:1px solid var(--line);border-radius:16px;padding:0 14px}
+.review summary{cursor:pointer;padding:12px 0;font-weight:800;font-size:14px;color:var(--bone);list-style:none}
+.review summary::-webkit-details-marker{display:none}
+.review summary::after{content:"▾";float:right;color:var(--mut)}
+.review[open] summary::after{content:"▴"}
+.review h3{margin:6px 0 6px;font-size:12px;letter-spacing:.14em;color:var(--mut)}
+.review ul{list-style:none;margin:0 0 12px;padding:0;display:flex;flex-direction:column;gap:6px}
+.review li{display:flex;gap:10px;align-items:baseline;font-size:13.5px;line-height:1.3;color:#dde8e6}
+.review li b{flex:0 0 22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:800;color:#fff;background:var(--red)}
+.review li.pend b{background:#55636b}.review li.pend span{color:#b8c7cc}
+.review li em{font-style:normal;font-weight:800;color:var(--bone)}
+.review .none{color:var(--mut);font-size:13px;margin:0 0 12px}
 
 /* ---------- toast + flash ---------- */
 .toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(8px);background:#122634;color:var(--bone);border:1px solid var(--line);padding:10px 16px;border-radius:12px;font-weight:700;font-size:13px;opacity:0;pointer-events:none;z-index:100;transition:opacity .18s,transform .18s;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.result-flash{position:fixed;inset:0;display:grid;place-items:center;pointer-events:none;opacity:0;z-index:60;transition:opacity .14s}
+.result-flash{position:fixed;inset:0;display:grid;place-items:end center;padding-bottom:calc(170px + env(safe-area-inset-bottom));pointer-events:none;opacity:0;z-index:60;transition:opacity .14s}
 .result-flash.show{opacity:1}
-.result-flash__box{background:#0e2130;border:3px solid var(--coral);padding:18px 26px;border-radius:22px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6);transform:scale(.92);transition:transform .14s}
+.result-flash__box{background:#0e2130;border:3px solid var(--coral);padding:12px 22px;border-radius:22px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6);transform:scale(.92);transition:transform .14s}
 .result-flash.show .result-flash__box{transform:scale(1)}
-.result-flash__title{font-family:var(--disp);font-weight:800;font-size:34px;line-height:1}
+.result-flash__title{font-family:var(--disp);font-weight:800;font-size:28px;line-height:1}
 .result-flash__answer{margin-top:8px;font-weight:700;color:var(--mut);font-size:14px}
 .result-flash.good .result-flash__box{border-color:var(--lime)} .result-flash.good .result-flash__title{color:var(--lime)}
 .result-flash.bad .result-flash__box{border-color:var(--red)} .result-flash.bad .result-flash__title{color:var(--red)}
@@ -274,7 +292,7 @@ body.no-voice .answer-row{border-color:rgba(255,106,61,.5)}
 
   <section id="lobby" class="card lobby">
 <div class="lobby-logo"><img src="_cdn/static/31362222-7018-42b4-aa8d-7554039935b4-mambapalabra-monograma-final.png" width="72" height="72" alt="Logo M"><h1>MAMBAPALABRA</h1></div>
-<p role="status">Mambapalabra B1.13.1-UX1 · RC6 · rosco principal y nombres online claros</p>
+<p role="status">El rosco de a dos</p>
 <div class="local-section"><h2>Juego local</h2><p>Dos jugadores en este dispositivo</p>
     <div class="setup-grid">
       <div class="setup-field">
@@ -393,9 +411,11 @@ body.no-voice .answer-row{border-color:rgba(255,106,61,.5)}
     <h2 id="winnerText"></h2>
     <p id="winnerSub"></p>
     <div class="result-grid">
-      <div class="result-box"><span id="finalName1">Mamba</span><strong id="finalMamba">0</strong><span class="muted">aciertos</span></div>
-      <div class="result-box"><span id="finalName2">Facu</span><strong id="finalFacu">0</strong><span class="muted">aciertos</span></div>
+      <div class="result-box"><span id="finalName1">Mamba</span><strong id="finalMamba">0</strong><span class="muted">aciertos</span><span id="finalStats1" class="stat-line"></span></div>
+      <div class="result-box"><span id="finalName2">Facu</span><strong id="finalFacu">0</strong><span class="muted">aciertos</span><span id="finalStats2" class="stat-line"></span></div>
     </div>
+    <p id="historyLine" class="history-line" hidden></p>
+    <details id="reviewBox" class="review"><summary>Ver las que no salieron</summary><div id="reviewList"></div></details>
     <button id="playAgainBtn" class="start">JUGAR DE NUEVO</button>
   </section>
 </div>
@@ -1164,7 +1184,7 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
     else{els.voiceNote.classList.add("audio-error");els.voiceStatus.className="voice-status error";els.voiceStatus.textContent="⚠️ Voz";els.voiceNote.textContent=msg||"No se pudo reproducir voz.";}
   }
   const SPEECH_RESULT={COMPLETED:"completed",CANCELLED:"cancelled",FAILED:"failed"};
-  const HOST_PLAYBACK_RATE=.92;
+  const HOST_PLAYBACK_RATE=1;
   const FISH_DEFINITION_PLAYBACK_RATE=1.22; // Absolute rate in local and online; preserves pitch.
   const AUDIO_START_LIMIT_MS=10000,AUDIO_STALL_LIMIT_MS=10000;
   // Download is separate from playback startup: a cold network must not change the voice.
@@ -1464,7 +1484,7 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
     if(norm==="pasapalabra"||norm==="pasa palabra"){doPass(true);return;}
 
     if(isCorrect(item,answer)){
-      const pl=player();item.state="correct";pl.correct++;pl.okStreak++;pl.passStreak=0;const okLead=pl.okStreak%5===0?STREAK5_LEAD:"Correcto.";advanceWithinPlayer();tone("good");showFeedback("good","CORRECTO","",420);toast("Correcto");
+      const pl=player();item.state="correct";pl.correct++;pl.okStreak++;pl.passStreak=0;const okLead=pl.okStreak%5===0?STREAK5_LEAD:"Correcto.";advanceWithinPlayer();tone("good");showFeedback("good","CORRECTO","",520);
       const next=currentItem();setTurnState(TURN_STATE.SWITCHING);
       if(next){syncUI();turnPrompt(okLead);}
       else{
@@ -1476,7 +1496,7 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
       const previousOwner=game.active;
       item.state="wrong";player().wrong++;player().okStreak=0;player().passStreak=0;advanceWithinPlayer();tone("bad");
       const expected=item.answer,wrongLead=pickWrongLead(),other=1-previousOwner;
-      toast("Incorrecto. Era "+expected);showFeedback("bad","INCORRECTO","ERA: "+expected.toUpperCase(),650);setTurnState(TURN_STATE.SWITCHING);
+      showFeedback("bad","INCORRECTO","ERA: "+expected.toUpperCase(),1100);setTurnState(TURN_STATE.SWITCHING);
       const otherItem=currentItemFor(game.players[other]);
       if(otherItem){
         // El cambio de jugador es inmediato; después habla el conductor.
@@ -1580,10 +1600,50 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
     els.finalMamba.textContent=m;els.finalFacu.textContent=f;els.finalName1.textContent=n1;els.finalName2.textContent=n2;els.orbName1.textContent=n1;els.orbName2.textContent=n2;
     let text,sub;
     if(game.suddenScores[0]!==game.suddenScores[1]){const win=game.suddenScores[0]>game.suddenScores[1]?n1:n2;text="Gana "+win;sub="Desempate por muerte súbita.";}
-    else if(m!==f){text="Gana "+(m>f?n1:n2);sub=`${n1}: ${m} aciertos · ${n2}: ${f} aciertos.`;}
+    else if(m!==f){text="Gana "+(m>f?n1:n2);const ac=n=>n+(n===1?" acierto":" aciertos");sub=`${n1}: ${ac(m)} · ${n2}: ${ac(f)}.`;}
     else{text="Empate";sub=game.resultReason==="reserve-exhausted"?"No quedan preguntas de reserva.":"Partida empatada.";}
     els.winnerText.textContent=text;els.winnerSub.textContent=sub;
+    renderEndDetails(m,f);
     els.playAgain.textContent=online.enabled?(online.role==="host"?"REVANCHA":"ESPERAR REVANCHA DEL ANFITRIÓN"):"JUGAR DE NUEVO";
+  }
+  // Detalle del final: bien/mal/pasadas, las que fallaron con su respuesta y marcador histórico local.
+  const HISTORY_KEY="mamba:history:v1";
+  function esc(t){return String(t??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+  function recordHistory(){
+    try{
+      const h=JSON.parse(localStorage.getItem(HISTORY_KEY)||"{}");h.pairs=h.pairs||{};h.seen=h.seen||[];
+      const names=game.players.map(p=>(p.name||"").trim()),keys=names.map(n=>n.toLocaleLowerCase("es"));
+      const order=keys[0]<=keys[1]?[0,1]:[1,0],pk=order.map(i=>keys[i]).join("|");
+      const rec=h.pairs[pk]||{names:order.map(i=>names[i]),wins:[0,0],ties:0};
+      if(!h.seen.includes(game.matchId)){
+        const a=game.players[0].correct,b=game.players[1].correct,sa=game.suddenScores[0],sb2=game.suddenScores[1];
+        const w=sa!==sb2?(sa>sb2?0:1):a!==b?(a>b?0:1):-1;
+        if(w<0)rec.ties++;else rec.wins[order.indexOf(w)]++;
+        rec.names=order.map(i=>names[i]);h.pairs[pk]=rec;h.seen=[...h.seen,game.matchId].slice(-50);
+        localStorage.setItem(HISTORY_KEY,JSON.stringify(h));
+      }
+      return {rec,order};
+    }catch(_){return null;}
+  }
+  function renderEndDetails(m,f){
+    const pls=game.players,win=game.suddenScores[0]!==game.suddenScores[1]?(game.suddenScores[0]>game.suddenScores[1]?0:1):m!==f?(m>f?0:1):-1;
+    pls.forEach((p,i)=>{
+      const pend=p.items.filter(x=>x.state==="pending"||x.state==="todo").length;
+      const el=$("#finalStats"+(i+1));if(el)el.innerHTML=`<b class="ok">✓ ${p.correct}</b> · <b class="ko">✗ ${p.wrong}</b> · <b class="ps">⏭ ${pend}</b>`;
+      document.querySelectorAll(".result-box")[i]?.classList.toggle("winner",win===i);
+    });
+    const list=$("#reviewList");
+    if(list){
+      list.innerHTML=pls.map(p=>{
+        const bad=p.items.filter(x=>x.state==="wrong"),pend=p.items.filter(x=>x.state==="pending"||x.state==="todo");
+        const li=(x,cls)=>`<li class="${cls}"><b>${esc(x.letter)}</b><span><em>${esc(x.answer)}</em> — ${esc(x.clue)}</span></li>`;
+        const body=bad.length||pend.length?`<ul>${bad.map(x=>li(x,"")).join("")}${pend.map(x=>li(x,"pend")).join("")}</ul>`:`<p class="none">¡Ninguna! Rosco perfecto.</p>`;
+        return `<h3>${esc(p.name.toUpperCase())}</h3>${body}`;
+      }).join("");
+      $("#reviewBox").open=false;
+    }
+    const hl=$("#historyLine"),h=recordHistory();
+    if(hl&&h){const {rec}=h;hl.hidden=false;hl.innerHTML=`<span>HISTORIAL</span>${esc(rec.names[0])} ${rec.wins[0]} – ${rec.wins[1]} ${esc(rec.names[1])}${rec.ties?` · ${rec.ties} empate${rec.ties>1?"s":""}`:""}`;}
   }
   function finishGame(force=false){
     pauseTimer();stopRecognition();cancelHostSpeech();game.over=true;game.suddenDeath=false;game.suddenQuestion=null;
@@ -1651,7 +1711,7 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
     rec.onstart=()=>{if(!current())return;if(ctx.aborted){try{rec.abort();}catch(_){}return;}listening=true;els.transcript.textContent="● Escuchando…";els.mic.textContent="ESCUCHANDO";};
     // Evaluar al terminar de hablar: aceptar el final al instante o el
     // último parcial tras una gracia breve, sin reiniciar los relojes.
-    const VOICE_FINAL_GRACE_MS=320,VOICE_EMPTY_RESULT_LIMIT_MS=1500;
+    const VOICE_FINAL_GRACE_MS=220,VOICE_EMPTY_RESULT_LIMIT_MS=1500,VOICE_STABLE_MS=950;
     const commitVoice=text=>{
       if(!valid()||!text)return;
       ctx.handled=true;clearTimeout(ctx.finalTimer);
@@ -1711,13 +1771,14 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
       if(finals.length){commitVoice(best(finals));return;}
       if(interims.length){
         ctx.lastInterim=best(interims);
-        if(ctx.speechEnded&&recognizedCommand(ctx.lastInterim))commitVoice(ctx.lastInterim);
+        // Si el parcial ya es la respuesta correcta (o "pasapalabra"), se acepta al instante:
+        // no hace falta esperar a que el motor detecte el silencio.
+        if(recognizedCommand(ctx.lastInterim))commitVoice(ctx.lastInterim);
         else{
           els.transcript.textContent='Escuchando: "'+ctx.lastInterim+'"';
-          if(ctx.speechEnded){
-            clearTimeout(ctx.finalTimer);
-            ctx.finalTimer=setTimeout(()=>{if(valid())commitVoice(ctx.lastInterim);},VOICE_FINAL_GRACE_MS);
-          }
+          // Sin cambios en el parcial durante un rato = terminó de hablar (Safari tarda en avisarlo).
+          clearTimeout(ctx.finalTimer);
+          ctx.finalTimer=setTimeout(()=>{if(valid()&&ctx.lastInterim)commitVoice(ctx.lastInterim);},ctx.speechEnded?VOICE_FINAL_GRACE_MS:VOICE_STABLE_MS);
         }
       }else els.transcript.textContent="Escuchando…";
     };
@@ -1769,15 +1830,17 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
     if(withCountdown){
       const instance=game,overlay=document.querySelector("#startCountdown");game.countingDown=true;updatePauseControl();overlay.hidden=false;
       for(const number of [3,2,1]){
-        overlay.textContent=number;await new Promise(resolve=>setTimeout(resolve,1000));
+        overlay.textContent=number;await new Promise(resolve=>setTimeout(resolve,700));
         if(game!==instance){overlay.hidden=true;return;}
       }
       overlay.hidden=true;game.countingDown=false;updatePauseControl();
     }
     if(document.hidden){game.paused=true;updatePauseControl();updateTurnControls();return;}
     const started=game;
+    // Primera partida: solo la bienvenida (sin encadenar dos intros). Revanchas: intro corta.
+    const firstIntro=withCountdown&&!generalIntroPlayed;
     if(withCountdown){await playMatchIntro("general",started);if(game!==started)return;}
-    await playMatchIntro("solo",started);
+    if(!firstIntro)await playMatchIntro("solo",started);
     if(game!==started)return;
     turnPrompt();
   }
@@ -1849,7 +1912,8 @@ const ACTIVE_QUESTION_POOL=QUESTION_POOL.slice();
     }
   });
   els.fx.addEventListener("click",()=>{fxOn=!fxOn;els.fx.textContent=fxOn?"🎵 FX ON":"🎵 FX OFF";els.fx.setAttribute("aria-pressed",fxOn);});
-  window.addEventListener("error",e=>{if(els.transcript)els.transcript.textContent="Error: "+(e.message||"desconocido");});
+  // Avisos benignos del navegador (ResizeObserver) no son errores del juego: no mostrarlos.
+  window.addEventListener("error",e=>{const m=String(e.message||"");if(/ResizeObserver/i.test(m))return;if(els.transcript)els.transcript.textContent="Error: "+(m||"desconocido");});
   let questionLayoutKey="";
   function fitMobileRing(){
     if(!game||game.over)return;
