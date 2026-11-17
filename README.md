@@ -42,7 +42,7 @@ El deploy tarda entre 30 y 60 segundos. Verificar siempre en vivo:
   adentro de `index.html`.
 - `main` **no tiene el juego**. La copia archivada del build RC6 vive en el repo
   `mambapalabra-staging`, rama `release/rc6-build`, tag `rc6-2026-10-21`.
-- El modo Online está deshabilitado: apuntaba a un proyecto Supabase que ya no existe.
+- El modo Online está activo contra el Supabase MAMBAPALABRA-STAGING (qbzrqinnhrgeqvgtifrt). Si da 503/521, el proyecto está pausado: restaurarlo en Supabase.
 
 ## Cómo se verifica
 

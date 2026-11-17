@@ -23,7 +23,7 @@ Actualizado: 2026-11-15
 ## Trampas
 - GitHub Pages cachea 10 minutos: usar `?v=N` antes de decir que algo no se publicó.
 - No renombrar ni mover nada de `fish-bank/`, `fish-audio/`, `new-audio/`: el mapa de audio los referencia.
-- El modo Online está deshabilitado a propósito (el Supabase al que apuntaba no existe).
+- El modo Online está activo contra el Supabase MAMBAPALABRA-STAGING (qbzrqinnhrgeqvgtifrt). Si da 503/521, el proyecto está pausado: restaurarlo en Supabase.
 - `main` no tiene el juego. Publicar desde `main` deja el sitio roto.
 - `index.html.bak-pre-refactor` es backup local y está en `.gitignore`.
 

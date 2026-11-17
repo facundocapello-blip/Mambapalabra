@@ -25,7 +25,7 @@ Leer `README.md` primero. Reglas específicas de este repo:
 ## Lo que no se toca
 - `main` y la rama `qa/b112-guest-voice-handoff` (la usa el workflow de staging).
 - La copia archivada del RC6 (`mambapalabra-staging`, tag `rc6-2026-10-21`).
-- El modo Online: está deshabilitado a propósito.
+- El modo Online: activo (nov 2026) contra el Supabase MAMBAPALABRA-STAGING (ref qbzrqinnhrgeqvgtifrt, función multiplayer-room). Si responde 503/521, el proyecto está pausado: restaurarlo en Supabase.
 
 ## Verificación mínima antes de dar algo por cerrado
 1. HTTP 200 en la URL con `?v=2`.
